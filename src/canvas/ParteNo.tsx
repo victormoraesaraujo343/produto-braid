@@ -6,6 +6,7 @@ import { PARTE_MIN } from '../model/tipos'
 import * as op from '../model/operacoes'
 import { ESTRUTURAS } from '../biblioteca/estruturas'
 import { useAutoAltura } from '../ui/useAutoAltura'
+import { avisar } from '../ui/Toasts'
 import { cls, numero } from '../ui/util'
 import { IcoEntrar, IcoLixo } from '../ui/icones'
 
@@ -75,11 +76,11 @@ function ParteNoBase({ id, selected }: NodeProps) {
       <NodeToolbar isVisible={selected && unico} position={Position.Top} offset={10} className="barra-no">
         <button className="barra-btn" onClick={() => focar(id)}><IcoEntrar /> Entrar</button>
         <button className="barra-btn" title="Tirar a moldura e devolver as ideias para o nível de cima"
-          onClick={() => { mudar((d) => op.desfazerParte(d, id)); setUI({ selecao: [] }) }}>
+          onClick={() => { mudar((d) => op.desfazerParte(d, id), true); setUI({ selecao: [] }); avisar('Parte desfeita. As ideias voltaram para o nível de cima.') }}>
           Desfazer parte
         </button>
         <button className="barra-btn perigo" title="Apagar a parte e tudo dentro dela" aria-label="Apagar parte"
-          onClick={() => { mudar((d) => op.apagar(d, [id])); setUI({ selecao: [] }) }}>
+          onClick={() => { mudar((d) => op.apagar(d, [id]), true); setUI({ selecao: [] }); avisar('Parte apagada, com tudo o que tinha dentro.') }}>
           <IcoLixo />
         </button>
       </NodeToolbar>

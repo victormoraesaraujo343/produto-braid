@@ -18,7 +18,8 @@ export function Intencao() {
   const mudar = useStore((s) => s.mudar)
   const setUI = useStore((s) => s.setUI)
   const mostrar = useStore((s) => s.mostrar)
-  const [recolhido, setRecolhido] = useState(false)
+  const [recolhido, setRecolhidoEstado] = useState(() => { try { return localStorage.getItem('montagem:intencao-recolhida') === '1' } catch { return false } })
+  const setRecolhido = (v: boolean) => { setRecolhidoEstado(v); try { localStorage.setItem('montagem:intencao-recolhida', v ? '1' : '0') } catch { /* ok */ } }
   const ref = useRef<HTMLTextAreaElement>(null)
 
   const n = doc.nos[foco] ?? doc.nos[RAIZ]
@@ -32,7 +33,7 @@ export function Intencao() {
   if (recolhido) {
     return (
       <button className="intencao intencao-recolhida" onClick={() => setRecolhido(false)} aria-label="Mostrar intenção">
-        <span className="intencao-rot">Intenção</span>
+        <span className="intencao-rot">{ehRaiz ? 'Intenção da peça' : rotulo(n, 24)}</span>
         <span className="intencao-resumo">{n.intencao.trim() || 'ainda não escrita'}</span>
         <IcoBaixo tamanho={14} />
       </button>
@@ -45,8 +46,7 @@ export function Intencao() {
     <aside className="intencao" aria-label="Intenção e estrutura">
       <div className="intencao-topo">
         {ehRaiz ? (
-          <input className="intencao-titulo" value={n.titulo} placeholder="Roteiro sem título" aria-label="Título do roteiro"
-            onChange={(e) => { const v = e.target.value; mudar((d) => op.editar(d, RAIZ, { titulo: v })) }} />
+          <span className="intencao-titulo intencao-titulo-fixo">Intenção da peça</span>
         ) : (
           <input className="intencao-titulo" value={n.titulo} placeholder={etapa?.nome ?? 'Parte sem nome'} aria-label="Nome da parte"
             onChange={(e) => { const v = e.target.value; mudar((d) => op.editar(d, n.id, { titulo: v })) }} />
@@ -62,7 +62,7 @@ export function Intencao() {
       {etapa && <p className="intencao-papel"><span>Papel na estrutura</span> {etapa.funcao}</p>}
 
       <label className="intencao-rot" htmlFor="intencao-campo">
-        {ehRaiz ? 'O que esta peça precisa provocar em quem assiste?' : 'O que esta parte precisa provocar?'}
+        {ehRaiz ? 'O que ela precisa provocar em quem assiste?' : 'O que esta parte precisa provocar?'}
       </label>
       <textarea id="intencao-campo" ref={ref} className="intencao-campo" rows={2} value={n.intencao}
         placeholder={etapa?.pergunta ?? (ehRaiz ? 'Ex.: levar o público de uma crença a outra.' : 'Ex.: fazer o público duvidar do que parecia óbvio.')}

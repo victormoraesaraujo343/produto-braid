@@ -90,6 +90,7 @@ export function BarraTopo() {
   const painel = useStore((s) => s.painel)
   const focar = useStore((s) => s.focar)
   const setUI = useStore((s) => s.setUI)
+  const mudar = useStore((s) => s.mudar)
   const podeDesfazer = useZustand(useStore.temporal, (s) => s.pastStates.length > 0)
   const podeRefazer = useZustand(useStore.temporal, (s) => s.futureStates.length > 0)
   const [menu, setMenu] = useState(false)
@@ -109,11 +110,16 @@ export function BarraTopo() {
   return (
     <header className="topo">
       <div className="topo-esq" ref={menuRef}>
-        <button className="topo-roteiro" aria-expanded={menu} aria-haspopup="menu" onClick={() => setMenu(!menu)}>
+        <div className="topo-roteiro">
           <Marca />
-          <span className="topo-roteiro-nome">{rotulo(doc.nos[RAIZ])}</span>
-          <IcoBaixo tamanho={14} />
-        </button>
+          <input className="topo-titulo" value={doc.nos[RAIZ].titulo} placeholder="Roteiro sem título" aria-label="Título do roteiro"
+            onChange={(e) => { const v = e.target.value; mudar((d) => { d.nos[RAIZ].titulo = v }) }}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') (e.target as HTMLInputElement).blur() }} />
+          <button className="icone-btn" aria-expanded={menu} aria-haspopup="menu" aria-label="Seus roteiros e opções" title="Seus roteiros e opções"
+            onClick={() => setMenu(!menu)}>
+            <IcoBaixo tamanho={14} />
+          </button>
+        </div>
         {menu && <MenuRoteiros fechar={() => setMenu(false)} />}
       </div>
 

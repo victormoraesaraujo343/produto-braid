@@ -7,6 +7,7 @@ import { ESTRUTURAS } from '../biblioteca/estruturas'
 import { CURVAS } from '../biblioteca/curvas'
 import { FUNCOES } from '../biblioteca/funcoes'
 import type { Estrutura, Fonte, ModeloCurva } from '../biblioteca/tipos'
+import { avisar } from '../ui/Toasts'
 import { cls, curvaSuave } from '../ui/util'
 import { IcoFechar, IcoVoltar } from '../ui/icones'
 
@@ -63,9 +64,10 @@ function DetalheEstrutura({ e, voltar }: { e: Estrutura; voltar: () => void }) {
 
   const usar = () => {
     if (temFio && !confirmar) { setConfirmar(true); return }
-    mudar((d) => op.aplicarEstrutura(d, foco, e, origemVagas(d, foco, useStore.getState().alturas)))
+    mudar((d) => op.aplicarEstrutura(d, foco, e, origemVagas(d, foco, useStore.getState().alturas)), true)
     setConfirmar(false)
     focar(foco)
+    avisar(`${e.etapas.length} vagas criadas. Arraste as ideias para dentro delas.`)
   }
 
   return (
@@ -135,7 +137,7 @@ function DetalheCurva({ c, voltar }: { c: ModeloCurva; voltar: () => void }) {
       <Fontes fontes={c.fontes} />
       <div className="bib-rodape">
         <p className="bib-nota">Entra como curva-alvo tracejada na timeline. Não muda o seu texto; serve para comparar e ajustar.</p>
-        <button className="botao botao-primario" onClick={() => { mudar((d) => op.aplicarCurva(d, foco, c)); setUI({ faixaAberta: true }) }}>
+        <button className="botao botao-primario" onClick={() => { mudar((d) => op.aplicarCurva(d, foco, c), true); setUI({ faixaAberta: true }); avisar('Curva-alvo aplicada na timeline.') }}>
           Usar como alvo em “{rotulo(doc.nos[foco], 24)}”
         </button>
       </div>

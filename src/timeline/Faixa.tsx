@@ -8,16 +8,31 @@ import * as op from '../model/operacoes'
 import { FUNCOES } from '../biblioteca/funcoes'
 import { ESTRUTURAS } from '../biblioteca/estruturas'
 import { CURVAS } from '../biblioteca/curvas'
-import { Medidor } from '../canvas/IdeiaNo'
+import { Medidor, OPCOES_FUNCAO } from '../canvas/IdeiaNo'
 import { faixaApi } from './faixaApi'
 import { cls, corNivel, curvaSuave } from '../ui/util'
-import { IcoAviso, IcoBaixo, IcoCima, IcoLapis } from '../ui/icones'
+import { IcoAviso, IcoBaixo, IcoCheck, IcoCima, IcoCurva, IcoLapis, IcoRitmo } from '../ui/icones'
+import { Popover } from '../ui/Popover'
+import { Seletor } from '../ui/Seletor'
 
 const H = 112          // altura da área da curva
 const PAD_Y = 14
 const PAD_X = 16
 const VAGA_VAZIA = DURACAO_MIN * 2
 const AMOSTRAS = 48
+
+const RITMOS = [
+  { valor: 120, rotulo: '120 palavras/min', detalhe: 'Fala pausada, didática' },
+  { valor: 150, rotulo: '150 palavras/min', detalhe: 'Fala natural (padrão)' },
+  { valor: 180, rotulo: '180 palavras/min', detalhe: 'Fala rápida, vídeo curto' },
+  { valor: 230, rotulo: '230 palavras/min', detalhe: 'Leitura silenciosa' },
+]
+
+const MiniCurvaLinha = ({ pontos }: { pontos: [number, number][] }) => (
+  <svg width="44" height="18" viewBox="0 0 44 18" aria-hidden="true" className="mini-linha-curva">
+    <path d={curvaSuave(pontos.map(([p, v]) => [2 + p * 40, 2 + ((5 - v) / 4) * 14]), 0, 18)} />
+  </svg>
+)
 
 const yNivel = (n: number) => PAD_Y + ((5 - n) / 4) * (H - PAD_Y * 2)
 const nivelY = (y: number) => 5 - ((y - PAD_Y) / (H - PAD_Y * 2)) * 4
@@ -69,6 +84,8 @@ export function Faixa() {
   const [largura, setLargura] = useState(800)
   const [arraste, setArraste] = useState<{ id: string; indice: number; fora: boolean } | null>(null)
   const [avisoAtivo, setAvisoAtivo] = useState<AvisoRitmo | null>(null)
+  const [menuAlvo, setMenuAlvo] = useState(false)
+  const botaoAlvo = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const el = rolagem.current
@@ -129,9 +146,9 @@ export function Faixa() {
       window.removeEventListener('pointerup', up)
       setArraste(null)
       if (!ativo) { mostrar(item.id); return }
-      if (ev.clientY < topo - 30) { mudar((d) => op.tirarDoFio(d, item.id)); return }
+      if (ev.clientY < topo - 30) { mudar((d) => op.tirarDoFio(d, item.id), true); return }
       const i = faixaApi.indice(ev.clientX, item.id)
-      mudar((d) => op.inserirNoFio(d, r.id, item.id, i))
+      mudar((d) => op.inserirNoFio(d, r.id, item.id, i), true)
     }
     window.addEventListener('pointermove', mv)
     window.addEventListener('pointerup', up)
@@ -176,7 +193,7 @@ export function Faixa() {
       base[i] = v
       ult = [i, v]
       const pontos = base.map((val, k) => [Number((k / (AMOSTRAS - 1)).toFixed(4)), Number(val.toFixed(2))] as [number, number])
-      mudar((d) => { d.nos[r.id].alvo = { pontos, origem: 'desenho' } })
+      mudar((d) => { d.nos[r.id].alvo = { pontos, origem: 'desenho' } }, !ult)
     }
     marcar(e)
     const up = () => { window.removeEventListener('pointermove', marcar); window.removeEventListener('pointerup', up) }
@@ -193,13 +210,13 @@ export function Faixa() {
   const marcas: number[] = []
   for (let t = 0; t <= totalT && folhas.length; t += passo) marcas.push(t)
 
-  const titulo = r.id === RAIZ ? 'A peça inteira' : rotulo(r)
+  const titulo = r.id === RAIZ ? 'Peça inteira' : rotulo(r, 36)
 
   if (!aberta) {
     return (
       <section className={cls('faixa faixa-fechada', sobreFaixa && 'receber')} aria-label="Timeline (fechada)">
         <button className="faixa-alternar" onClick={() => setUI({ faixaAberta: true })} aria-label="Abrir timeline"><IcoCima /></button>
-        <span className="faixa-titulo">Timeline <span className="faixa-nivel">{titulo}</span></span>
+        <span className="faixa-titulo">{titulo}</span>
         <svg className="faixa-mini" viewBox={`0 0 ${Math.max(larguraConteudo, 1)} ${H}`} preserveAspectRatio="none" aria-hidden="true">
           {linha && <path d={linha} className="curva-real" vectorEffect="non-scaling-stroke" />}
         </svg>
@@ -211,44 +228,60 @@ export function Faixa() {
   return (
     <section className={cls('faixa', sobreFaixa && 'receber')} aria-label="Timeline">
       <header className="faixa-cabeca">
-        <button className="faixa-alternar" onClick={() => setUI({ faixaAberta: false })} aria-label="Fechar timeline"><IcoBaixo /></button>
-        <span className="faixa-titulo">Timeline <span className="faixa-nivel">{titulo}</span></span>
-        <span className="faixa-total" title="Duração estimada pelo número de palavras">{fmtTempo(totalT)}</span>
+        <button className="faixa-alternar" onClick={() => setUI({ faixaAberta: false })} aria-label="Fechar timeline" title="Fechar timeline"><IcoBaixo /></button>
+        <div className="faixa-id">
+          <span className="faixa-titulo">{titulo}</span>
+          <span className="faixa-total" title="Duração estimada pelo número de palavras">{fmtTempo(totalT)}</span>
+        </div>
 
-        {noSel && folhaSel ? (
-          <div className="faixa-sel">
-            <span className="faixa-sel-nome">{rotulo(noSel, 30)}</span>
-            <Medidor valor={noSel.intensidade} onChange={(v) => mudar((d) => op.editar(d, noSel.id, { intensidade: v }))} />
-            <select className="barra-select" aria-label="Função no ritmo" value={noSel.funcao ?? ''}
-              onChange={(e) => { const v = e.target.value || undefined; mudar((d) => op.editar(d, noSel.id, { funcao: v })) }}>
-              <option value="">Função no ritmo…</option>
-              {FUNCOES.map((f) => <option key={f.id} value={f.id}>{f.nome}</option>)}
-            </select>
-          </div>
-        ) : avisos.length ? (
-          <button className="faixa-aviso" onMouseEnter={() => setAvisoAtivo(avisos[0])} onMouseLeave={() => setAvisoAtivo(null)}
-            onFocus={() => setAvisoAtivo(avisos[0])} onBlur={() => setAvisoAtivo(null)}>
-            <IcoAviso tamanho={14} /> {avisos[0].texto}{avisos.length > 1 ? ` (+${avisos.length - 1})` : ''}
-          </button>
-        ) : <span className="faixa-dica">Arraste um ponto da curva para mudar a intensidade. Arraste um trecho para mudar a ordem.</span>}
+        <div className="faixa-meio">
+          {noSel && folhaSel ? (
+            <div className="faixa-sel">
+              <span className="faixa-sel-nome">{rotulo(noSel, 34)}</span>
+              <Medidor valor={noSel.intensidade} onChange={(v) => mudar((d) => op.editar(d, noSel.id, { intensidade: v }), true)} />
+              <Seletor rotulo="Função no ritmo" vazio="Função no ritmo" valor={noSel.funcao} opcoes={OPCOES_FUNCAO} permitirLimpar
+                onMudar={(v) => mudar((d) => op.editar(d, noSel.id, { funcao: v }), true)} />
+            </div>
+          ) : avisos.length ? (
+            <button className="faixa-aviso" onMouseEnter={() => setAvisoAtivo(avisos[0])} onMouseLeave={() => setAvisoAtivo(null)}
+              onFocus={() => setAvisoAtivo(avisos[0])} onBlur={() => setAvisoAtivo(null)} title="Passe o mouse para ver o trecho na curva">
+              <IcoAviso tamanho={14} /> <span>{avisos[0].texto}{avisos.length > 1 ? ` (+${avisos.length - 1})` : ''}</span>
+            </button>
+          ) : folhas.length ? <span className="faixa-dica">Puxe um ponto para mudar a intensidade. Arraste um trecho para mudar a ordem.</span> : null}
+        </div>
 
-        <div className="faixa-alvo">
-          {alvo ? <span className="faixa-alvo-nome" title="Curva-alvo: a intenção de ritmo, para comparar com o texto">Alvo: {nomeAlvo ?? 'curva'}</span> : null}
-          <button className={cls('botao-mini', desenho && 'ativo')} aria-pressed={desenho}
-            title="Desenhe por cima da curva o ritmo que você quer" onClick={() => setUI({ desenhoAlvo: !desenho })}>
-            <IcoLapis tamanho={13} /> {desenho ? 'Desenhando' : 'Desenhar alvo'}
+        <div className="faixa-ferramentas">
+          <button ref={botaoAlvo} className={cls('seletor', alvo && 'com-valor', desenho && 'ativo')} aria-expanded={menuAlvo}
+            onClick={() => setMenuAlvo(!menuAlvo)} title="A intenção de ritmo, para comparar com o texto">
+            <IcoCurva tamanho={14} />
+            <span className="seletor-valor">{desenho ? 'Desenhando alvo' : alvo ? `Alvo: ${nomeAlvo ?? 'curva'}` : 'Curva-alvo'}</span>
+            <IcoBaixo tamanho={12} />
           </button>
-          {alvo && <button className="botao-mini" onClick={() => mudar((d) => { delete d.nos[r.id].alvo })}>Limpar</button>}
-          <label className="faixa-ritmo">
-            <span>Ritmo</span>
-            <select value={doc.ritmo} onChange={(e) => { const v = Number(e.target.value); mudar((d) => { d.ritmo = v }) }}
-              title="Palavras por minuto: define a duração estimada">
-              <option value={120}>120 p/min (pausado)</option>
-              <option value={150}>150 p/min (fala)</option>
-              <option value={180}>180 p/min (rápido)</option>
-              <option value={230}>230 p/min (leitura)</option>
-            </select>
-          </label>
+          <Popover aberto={menuAlvo} ancora={botaoAlvo} onFechar={() => setMenuAlvo(false)} lado="cima" alinhar="fim" rotulo="Curva-alvo" className="popover-alvo">
+            <p className="popover-titulo">Curva-alvo</p>
+            <p className="popover-texto">O ritmo que você quer para {r.id === RAIZ ? 'a peça' : 'esta parte'}. Fica tracejada atrás da curva do texto e marca onde os dois se afastam.</p>
+            <div className="popover-acoes">
+              <button className={cls('botao', desenho && 'ativo')} onClick={() => { setUI({ desenhoAlvo: !desenho }); setMenuAlvo(false) }}>
+                <IcoLapis tamanho={14} /> {desenho ? 'Parar de desenhar' : 'Desenhar à mão'}
+              </button>
+              {alvo && <button className="botao botao-fantasma" onClick={() => { mudar((d) => { delete d.nos[r.id].alvo }, true); setMenuAlvo(false) }}>Limpar</button>}
+            </div>
+            <p className="popover-subtitulo">Ou partir de um modelo</p>
+            <ul className="lista-curvas">
+              {CURVAS.map((c) => (
+                <li key={c.id}>
+                  <button className={cls('lista-curva', origemAlvo === c.id && 'on')} title={c.serve}
+                    onClick={() => { mudar((d) => op.aplicarCurva(d, r.id, c), true); setMenuAlvo(false) }}>
+                    <MiniCurvaLinha pontos={c.pontos} />
+                    <span>{c.nome}</span>
+                    {origemAlvo === c.id && <IcoCheck tamanho={14} />}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </Popover>
+          <Seletor rotulo="Ritmo de leitura" valor={doc.ritmo} prefixo={<IcoRitmo tamanho={14} />}
+            opcoes={RITMOS} onMudar={(v) => v && mudar((d) => { d.ritmo = v }, true)} />
         </div>
       </header>
 

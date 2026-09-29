@@ -1,0 +1,21 @@
+/* Cópia da fundação de identidade do Victor (via ../novo-portifolio/src/styles/identidade/tokens.css).
+   Não editar aqui: rode 'npm run identidade:sync'. */
+:root {
+  /* Neutros */
+  --neutral-0: #f7f4ee;
+  --neutral-50: #eeeae3;  /* papel */
+  --neutral-100: #e2ded6;
+  --neutral-300: #a5a39e;
+  --neutral-600: #585b5e;
+  --neutral-900: #101112; /* carvão */
+
+  /* Marca */
+  --brand-orange: #ff7300;   /* sinal */
+  --brand-graphite: #26292d; /* grafite */
+  --brand-aluminum: #b9bec4; /* alumínio */
+
+  /* Famílias */
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}

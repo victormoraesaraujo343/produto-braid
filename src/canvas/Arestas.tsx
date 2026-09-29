@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { BaseEdge, EdgeLabelRenderer, getBezierPath, type EdgeProps } from '@xyflow/react'
 import { useStore } from '../model/store'
 import * as op from '../model/operacoes'
+import { avisar } from '../ui/Toasts'
 import { cls } from '../ui/util'
 import { IcoFechar } from '../ui/icones'
 
@@ -18,7 +19,7 @@ function FioBase(p: EdgeProps) {
         <EdgeLabelRenderer>
           <button className="aresta-acao nodrag nopan" style={{ transform: `translate(-50%, -50%) translate(${lx}px, ${ly}px)` }}
             title="Tira a ideia seguinte do fio (ela continua na mesa)"
-            onClick={() => mudar((d) => op.tirarDoFio(d, p.target))}>
+            onClick={() => { mudar((d) => op.tirarDoFio(d, p.target), true); avisar('Fio cortado. A ideia continua na mesa.') }}>
             <IcoFechar tamanho={12} /> Cortar aqui
           </button>
         </EdgeLabelRenderer>
@@ -43,13 +44,13 @@ function LigacaoBase(p: EdgeProps) {
           style={{ transform: `translate(-50%, -50%) translate(${lx}px, ${ly}px)` }}>
           {tipo === 'explica' ? <span>explica</span> : (
             <button className="aresta-juntar" title="Junta as duas ideias numa só (dá para desfazer)"
-              onClick={() => { mudar((d) => op.juntar(d, p.source, p.target)); setUI({ selecao: [p.source] }) }}>
+              onClick={() => { mudar((d) => op.juntar(d, p.source, p.target), true); setUI({ selecao: [p.source] }); avisar('As duas ideias viraram uma.') }}>
               Juntar em uma
             </button>
           )}
           {p.selected && (
             <button className="aresta-x" aria-label="Apagar ligação" title="Apagar ligação"
-              onClick={() => mudar((d) => op.desligar(d, ligId))}>
+              onClick={() => mudar((d) => op.desligar(d, ligId), true)}>
               <IcoFechar tamanho={11} />
             </button>
           )}

@@ -1,0 +1,132 @@
+/* Montagem — tokens de significado.
+   A paleta vem da identidade do Victor (identidade.css): papel, grafite, carvão, alumínio e o laranja-sinal.
+   Regra: laranja é SINAL (atenção, seleção, ação principal, pico de energia). Nunca texto pequeno sobre papel.
+   Documentação: docs/DESIGN-SYSTEM.md */
+
+:root {
+  /* Superfícies */
+  --sup-mesa: var(--neutral-50);          /* o canvas: papel */
+  --sup-painel: var(--neutral-0);         /* barras e painéis */
+  --sup-folha: #fcfbf8;                   /* onde se escreve: cartões, página */
+  --sup-funda: var(--neutral-100);        /* poços: segmentado, hover, trilhos */
+  --sup-parte: rgba(247, 244, 238, 0.6);  /* moldura de parte sobre a mesa */
+  --sup-inversa: var(--brand-graphite);   /* dicas, chips fortes */
+  --mesa-ponto: #d3cec5;
+
+  /* Texto */
+  --txt: var(--neutral-900);
+  --txt-2: #45484b;
+  --txt-3: #666869;                       /* menor texto legível: 4,5:1 sobre o papel */
+  --txt-inverso: var(--neutral-50);
+
+  /* Linhas */
+  --borda: #dbd6cd;
+  --borda-forte: #c3bdb2;
+
+  /* Sinal (laranja) */
+  --sinal: var(--brand-orange);
+  --sinal-suave: rgba(255, 115, 0, 0.12);
+  --sinal-borda: rgba(255, 115, 0, 0.55);
+  --sobre-sinal: var(--neutral-900);      /* texto em cima do laranja é escuro */
+
+  /* Fio: a ordem de leitura, tinta sobre papel */
+  --fio: var(--brand-graphite);
+
+  /* Energia: do alumínio frio (vale) ao laranja-sinal (pico) */
+  --i1: #97a1ab;
+  --i2: #b3ad9f;
+  --i3: #d6b26a;
+  --i4: #f5a13c;
+  --i5: var(--brand-orange);
+
+  /* Estados */
+  --aviso: #8a5300;
+  --aviso-fundo: rgba(214, 178, 106, 0.18);
+  --perigo: #b8321a;
+
+  /* Tipografia */
+  --f-ui: 'Hanken Grotesk Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-texto: 'Literata Variable', 'Iowan Old Style', Georgia, serif;
+  --f-num: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --t-meta: 11px;
+  --t-rotulo: 12px;
+  --t-ui: 13px;
+  --t-corpo: 14px;
+  --t-texto: 15px;
+  --t-titulo: 17px;
+  --t-titulo-2: 21px;
+  --t-pagina: 36px;
+  --p-normal: 450;
+  --p-medio: 550;
+  --p-forte: 650;
+
+  /* Espaço (grade de 4) */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 20px;
+  --e-6: 24px;
+  --e-8: 32px;
+
+  /* Raios: controle < cartão < moldura */
+  --r-controle: 7px;
+  --r-cartao: 10px;
+  --r-moldura: 16px;
+  --r-pilula: 999px;
+
+  /* Elevação */
+  --sombra-cartao: 0 1px 0 rgba(16, 17, 18, 0.04), 0 1px 3px rgba(16, 17, 18, 0.06);
+  --sombra-flutua: 0 1px 2px rgba(16, 17, 18, 0.06), 0 8px 24px rgba(16, 17, 18, 0.1);
+  --sombra-alta: 0 2px 6px rgba(16, 17, 18, 0.08), 0 24px 56px rgba(16, 17, 18, 0.16);
+
+  /* Movimento */
+  --d-rapida: 120ms;
+  --d-media: 200ms;
+  --d-lenta: 420ms;
+  --ease-sai: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-mola: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Camadas */
+  --z-mesa-ui: 5;
+  --z-painel: 8;
+  --z-faixa: 10;
+  --z-topo: 20;
+  --z-popover: 40;
+  --z-tela: 50;
+  --z-toast: 60;
+
+  color-scheme: light;
+}
+
+/* Escuro: carvão e grafite como superfícies, papel como tinta. O sinal não muda. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --sup-mesa: #121314; --sup-painel: #18191b; --sup-folha: #202225; --sup-funda: #26292d;
+    --sup-parte: rgba(255, 255, 255, 0.025); --sup-inversa: var(--neutral-50); --mesa-ponto: #2a2d31;
+    --txt: var(--neutral-50); --txt-2: #bdb9b2; --txt-3: #908e89; --txt-inverso: var(--neutral-900);
+    --borda: #2e3135; --borda-forte: #43474c;
+    --sinal-suave: rgba(255, 115, 0, 0.16);
+    --fio: #d9d4ca;
+    --i1: #7d8894; --i2: #a09a8c; --i3: #cdae68; --i4: #f5a13c;
+    --aviso: #e8b25e; --aviso-fundo: rgba(214, 178, 106, 0.14); --perigo: #ff7a5c;
+    --sombra-cartao: 0 1px 0 rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.35);
+    --sombra-flutua: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+    --sombra-alta: 0 2px 8px rgba(0, 0, 0, 0.45), 0 28px 64px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --sup-mesa: #121314; --sup-painel: #18191b; --sup-folha: #202225; --sup-funda: #26292d;
+  --sup-parte: rgba(255, 255, 255, 0.025); --sup-inversa: var(--neutral-50); --mesa-ponto: #2a2d31;
+  --txt: var(--neutral-50); --txt-2: #bdb9b2; --txt-3: #908e89; --txt-inverso: var(--neutral-900);
+  --borda: #2e3135; --borda-forte: #43474c;
+  --sinal-suave: rgba(255, 115, 0, 0.16);
+  --fio: #d9d4ca;
+  --i1: #7d8894; --i2: #a09a8c; --i3: #cdae68; --i4: #f5a13c;
+  --aviso: #e8b25e; --aviso-fundo: rgba(214, 178, 106, 0.14); --perigo: #ff7a5c;
+  --sombra-cartao: 0 1px 0 rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --sombra-flutua: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.45);
+  --sombra-alta: 0 2px 8px rgba(0, 0, 0, 0.45), 0 28px 64px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}

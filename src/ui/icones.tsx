@@ -28,12 +28,19 @@ export const IcoAviso = (p: P) => <svg {...base(p)}><path d="M8 2.5 14 13H2z" />
 export const IcoMais = (p: P) => <svg {...base(p)}><path d="M8 3v10M3 8h10" /></svg>
 export const IcoMenu = (p: P) => <svg {...base(p)}><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" /></svg>
 
+export const IcoCheck = (p: P) => <svg {...base(p)}><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+export const IcoMenos = (p: P) => <svg {...base(p)}><path d="M3 8h10" /></svg>
+export const IcoEnquadrar = (p: P) => <svg {...base(p)}><path d="M2.5 6V3.5a1 1 0 0 1 1-1H6M10 2.5h2.5a1 1 0 0 1 1 1V6M13.5 10v2.5a1 1 0 0 1-1 1H10M6 13.5H3.5a1 1 0 0 1-1-1V10" /></svg>
+export const IcoTeclado = (p: P) => <svg {...base(p)}><rect x="1.5" y="4" width="13" height="8.5" rx="1.5" /><path d="M4 7h.01M6.5 7h.01M9 7h.01M11.5 7h.01M5 10h6" /></svg>
+export const IcoCurva = (p: P) => <svg {...base(p)}><path d="M1.5 10.5C3.5 10.5 4 4 6.5 4S9 12.5 11 12.5s2-4 3.5-4" /></svg>
+export const IcoRitmo = (p: P) => <svg {...base(p)}><circle cx="8" cy="8.5" r="5.5" /><path d="M8 5.5v3l2 1.5M6.5 1.5h3" /></svg>
+
 /** Marca: três trechos sob uma curva — a mesma narrativa no espaço e no tempo. */
 export const Marca = ({ tamanho = 22 }: { tamanho?: number }) => (
   <svg width={tamanho} height={tamanho * 0.8} viewBox="0 0 25 20" aria-hidden="true">
     <path d="M1.5 12.5C5 12.5 6 7 9.5 7s4.5 5 7.5 5 4-9 6.5-10.5" fill="none" stroke="var(--fio)" strokeWidth="2" strokeLinecap="round" />
     <rect x="1" y="15" width="6.5" height="4" rx="1.2" fill="var(--i1)" />
     <rect x="9" y="15" width="5" height="4" rx="1.2" fill="var(--i3)" />
-    <rect x="15.5" y="15" width="8.5" height="4" rx="1.2" fill="var(--i5)" />
+    <rect x="15.5" y="15" width="8.5" height="4" rx="1.2" fill="var(--sinal)" />
   </svg>
 )

@@ -10,6 +10,7 @@ import { Intencao } from './painel/Intencao'
 import { Biblioteca } from './painel/Biblioteca'
 import { TextoFinal } from './painel/TextoFinal'
 import { editavel } from './ui/util'
+import { Toasts } from './ui/Toasts'
 
 function Atalhos() {
   useEffect(() => {
@@ -24,6 +25,8 @@ function Atalhos() {
       }
       if (mod && e.key.toLowerCase() === 'y' && !editavel(e.target)) { e.preventDefault(); refazer(); return }
       if (editavel(e.target) || s.painel === 'texto') return
+      // Teclas já tratadas por um menu ou seletor não viram atalho da mesa.
+      if (e.defaultPrevented || (e.target instanceof HTMLElement && e.target.closest('.popover, .menu-ligacao, .menu-roteiros'))) return
       if (e.key === 'Escape') {
         if (s.pendente) s.setUI({ pendente: null })
         else if (s.painel) s.setUI({ painel: null })
@@ -65,6 +68,7 @@ export default function App() {
         <MenuLigacao />
         {painel === 'texto' && <TextoFinal />}
         <Atalhos />
+        <Toasts />
       </div>
     </ReactFlowProvider>
   )

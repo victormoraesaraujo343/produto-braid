@@ -3,6 +3,17 @@ import { useStore } from '../model/store'
 import { descendentes, rotulo } from '../model/derivar'
 import * as op from '../model/operacoes'
 import type { Doc } from '../model/tipos'
+import { avisar } from '../ui/Toasts'
+
+/** Amostra de como cada ligação aparece na mesa: o menu ensina a legenda. */
+const Amostra = ({ tipo }: { tipo: string }) => (
+  <svg className={`amostra amostra-${tipo}`} width="34" height="14" viewBox="0 0 34 14" aria-hidden="true">
+    {tipo === 'pertence'
+      ? <><rect x="12" y="1.5" width="20" height="11" rx="3" className="amostra-moldura" /><rect x="2" y="5" width="7" height="4" rx="1" className="amostra-bloco" /><path d="M9.5 7h5" className="amostra-linha" /></>
+      : <path d="M2 7h26" className="amostra-linha" />}
+    {tipo === 'depois' && <path d="M26 3.5 31 7l-5 3.5z" className="amostra-seta" />}
+  </svg>
+)
 
 interface Opcao {
   chave: string
@@ -63,8 +74,9 @@ export function MenuLigacao() {
 
   const escolher = (o: Opcao) => {
     if (!o.ok) return
-    mudar(o.aplicar)
+    mudar(o.aplicar, true)
     setUI({ pendente: null })
+    if (o.chave === 'pertence') avisar(`Movida para dentro de “${B}”.`)
   }
 
   const x = Math.min(pendente.x, window.innerWidth - 300)
@@ -82,6 +94,7 @@ export function MenuLigacao() {
         <button key={o.chave} role="menuitem" disabled={!o.ok} className="menu-ligacao-opcao"
           title={o.ok ? o.detalhe : o.motivo} onClick={() => escolher(o)}>
           <span className="menu-ligacao-tecla">{i + 1}</span>
+          <Amostra tipo={o.chave} />
           <span>
             <span className="menu-ligacao-texto">{o.texto}</span>
             <span className="menu-ligacao-detalhe">{o.ok ? o.detalhe : o.motivo}</span>

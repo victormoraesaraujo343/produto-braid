@@ -37,13 +37,15 @@ interface Estado {
   /** Pedido para a mesa enquadrar um nó (a câmera obedece e zera). */
   enquadrar: { id: string; n: number } | null
 
-  mudar: (fn: (d: Doc) => void) => void
+  /** Aplica uma mudança. `marco` força um passo próprio de desfazer (ações discretas). */
+  mudar: (fn: (d: Doc) => void, marco?: boolean) => void
   setUI: (p: Partial<Omit<Estado, 'doc' | 'mudar' | 'setUI'>>) => void
   focar: (id: string) => void
   mostrar: (id: string) => void
 }
 
 let contador = 0
+let forcarMarco = false
 
 export const useStore = create<Estado>()(
   temporal(
@@ -63,7 +65,8 @@ export const useStore = create<Estado>()(
       sobreFaixa: false,
       enquadrar: null,
 
-      mudar: (fn) => {
+      mudar: (fn, marco) => {
+        if (marco) forcarMarco = true
         const d = structuredClone(get().doc)
         fn(d)
         d.editadoEm = Date.now()
@@ -86,7 +89,8 @@ export const useStore = create<Estado>()(
         let ultimo = 0
         return (estado) => {
           const agora = Date.now()
-          if (agora - ultimo > 700) handleSet(estado)
+          if (forcarMarco || agora - ultimo > 700) handleSet(estado)
+          forcarMarco = false
           ultimo = agora
         }
       },

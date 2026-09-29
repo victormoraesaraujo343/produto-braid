@@ -13,6 +13,8 @@ import { Fio, Ligacao } from './Arestas'
 import { faixaApi } from '../timeline/faixaApi'
 import { editavel } from '../ui/util'
 import { IcoAgrupar } from '../ui/icones'
+import { avisar } from '../ui/Toasts'
+import { ControlesMesa } from './ControlesMesa'
 
 const tiposNo = { ideia: IdeiaNo, parte: ParteNo }
 const tiposAresta = { fio: Fio, ligacao: Ligacao }
@@ -66,7 +68,7 @@ function construirArestas(doc: Doc, alturas: Record<string, number>): Edge[] {
     out.push({
       id: `lig|${l.id}`, source: l.de, target: l.para, ...alcas(doc, l.de, l.para, alturas), type: 'ligacao',
       data: { tipo: l.tipo, ligId: l.id }, zIndex: 1100,
-      markerEnd: { type: MarkerType.Arrow, width: 12, height: 12, color: 'var(--tinta-3)' },
+      markerEnd: { type: MarkerType.Arrow, width: 12, height: 12, color: 'var(--txt-3)' },
     })
   }
   return out
@@ -185,15 +187,18 @@ export function Mesa() {
       if (Object.entries(novasAlturas).some(([id, h]) => atual[id] !== h)) setUI({ alturas: { ...atual, ...novasAlturas } })
     }
     if (sel) setUI({ selecao: [...sel] })
-    if (remover.length) mudar((d) => op.apagar(d, remover))
+    if (remover.length) {
+      mudar((d) => op.apagar(d, remover), true)
+      avisar(remover.length === 1 ? 'Apagado.' : `${remover.length} itens apagados.`)
+    }
   }, [mudar, setUI])
 
   const onEdgesChange = useCallback((changes: EdgeChange[]) => {
     for (const c of changes) {
       if (c.type !== 'remove') continue
       const [tipo, a, b] = c.id.split('|')
-      if (tipo === 'fio') mudar((d) => op.tirarDoFio(d, b))
-      else if (tipo === 'lig') mudar((d) => op.desligar(d, a))
+      if (tipo === 'fio') { mudar((d) => op.tirarDoFio(d, b), true); avisar('Fio cortado. A ideia continua na mesa.') }
+      else if (tipo === 'lig') mudar((d) => op.desligar(d, a), true)
     }
   }, [mudar])
 
@@ -218,7 +223,7 @@ export function Mesa() {
       const base = pai === RAIZ ? { x: 0, y: 0 } : posAbs(d, pai)
       novo = op.criarIdeia(d, pai, p.x - base.x, p.y - base.y - 20, '', false)
       op.ligarDepois(d, de, novo)
-    })
+    }, true)
     setUI({ selecao: [novo], editando: novo })
   }, [mudar, setUI, rf])
 
@@ -255,7 +260,8 @@ export function Mesa() {
           if (volta) { d.nos[id].x = volta.x; d.nos[id].y = volta.y }
           op.inserirNoFio(d, s.foco, id, indice + k)
         })
-      })
+      }, true)
+      avisar(raizes.length === 1 ? 'Entrou no fio.' : `${raizes.length} entraram no fio.`)
       return
     }
     const p = rf.screenToFlowPosition({ x: ev.clientX, y: ev.clientY })
@@ -265,7 +271,7 @@ export function Mesa() {
         const alvo = parteSob(d, p, ignorar, s.alturas)
         if (alvo !== d.nos[id].pai) op.reparentar(d, id, alvo)
       }
-    })
+    }, true)
   }, [mudar, setUI, rf])
 
   // Dois cliques: na mesa cria uma ideia solta; dentro de uma parte, cria já no fio dela.
@@ -281,7 +287,7 @@ export function Mesa() {
       const base = pai === RAIZ ? { x: 0, y: 0 } : posAbs(d, pai)
       novo = op.criarIdeia(d, pai, p.x - base.x - LARGURA_IDEIA / 2, p.y - base.y - 24)
       if (pai !== RAIZ) { d.nos[novo].x = Math.max(PARTE_PAD, d.nos[novo].x); d.nos[novo].y = Math.max(PARTE_CABECALHO, d.nos[novo].y) }
-    })
+    }, true)
     setUI({ selecao: [novo], editando: novo })
   }, [mudar, rf, setUI])
 
@@ -306,8 +312,9 @@ export function Mesa() {
           const y = centro.y - base.y + Math.floor(i / colunas) * 180
           novos.push(op.criarIdeia(d, foco, x, y, t))
         })
-      })
+      }, true)
       setUI({ selecao: novos })
+      avisar(novos.length === 1 ? 'Uma ideia colada.' : `${novos.length} ideias coladas.`)
     }
     window.addEventListener('paste', colar)
     return () => window.removeEventListener('paste', colar)
@@ -353,14 +360,15 @@ export function Mesa() {
       >
         <Background variant={BackgroundVariant.Dots} gap={24} size={1.4} />
       </ReactFlow>
+      <ControlesMesa />
 
       {selecionadosMesmoPai && (
         <div className="barra-grupo">
           <span>{selecao.length} selecionados</span>
           <button className="barra-btn" onClick={() => {
             let g: string | null = null
-            mudar((d) => { g = op.agrupar(d, selecao) })
-            if (g) setUI({ selecao: [g] })
+            mudar((d) => { g = op.agrupar(d, selecao) }, true)
+            if (g) { setUI({ selecao: [g] }); avisar('Agrupadas numa parte nova. Dê um nome e uma intenção.') }
           }}><IcoAgrupar /> Agrupar em parte</button>
         </div>
       )}
