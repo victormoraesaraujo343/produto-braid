@@ -44,7 +44,7 @@ export function TextoFinal() {
   const irPara = (id: string) => { setUI({ painel: null }); if (doc.nos[id]?.tipo === 'parte') focar(id); else mostrar(id) }
 
   return (
-    <div className="texto-final" role="dialog" aria-modal="true" aria-label="Texto final">
+    <div className="texto-final" role="dialog" aria-modal="true" aria-label="Texto final" data-lab="11">
       <header className="tf-topo">
         <button className="botao" onClick={() => setUI({ painel: null })}><IcoVoltar /> Voltar para a mesa</button>
         <div className="tf-opcoes">

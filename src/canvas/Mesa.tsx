@@ -50,7 +50,7 @@ function alcas(doc: Doc, a: string, b: string, alturas: Record<string, number>) 
   return empilhado ? { sourceHandle: 'sb', targetHandle: 'tt' } : { sourceHandle: 's', targetHandle: 't' }
 }
 
-function construirArestas(doc: Doc, alturas: Record<string, number>): Edge[] {
+function construirArestas(doc: Doc, alturas: Record<string, number>, selecao: string[]): Edge[] {
   const out: Edge[] = []
   for (const r of Object.values(doc.nos)) {
     if (r.tipo !== 'parte') continue
@@ -67,7 +67,8 @@ function construirArestas(doc: Doc, alturas: Record<string, number>): Edge[] {
   for (const l of doc.ligacoes) {
     out.push({
       id: `lig|${l.id}`, source: l.de, target: l.para, ...alcas(doc, l.de, l.para, alturas), type: 'ligacao',
-      data: { tipo: l.tipo, ligId: l.id }, zIndex: 1100,
+      data: { tipo: l.tipo, ligId: l.id, perto: selecao.includes(l.de) || selecao.includes(l.para) }, zIndex: 1100,
+      className: selecao.includes(l.de) || selecao.includes(l.para) ? 'perto' : undefined,
       markerEnd: { type: MarkerType.Arrow, width: 12, height: 12, color: 'var(--txt-3)' },
     })
   }
@@ -117,7 +118,7 @@ export function Mesa() {
       useStore.getState().focar(RAIZ)
     }
   }, [iniciado, doc.id])
-  const edges = useMemo(() => construirArestas(doc, alturas), [doc, alturas])
+  const edges = useMemo(() => construirArestas(doc, alturas, selecao), [doc, alturas, selecao])
 
   // Câmera: obedece aos pedidos de enquadrar (entrar numa parte, mostrar um nó),
   // descontando o espaço dos painéis que ficam por cima da mesa.
@@ -130,7 +131,7 @@ export function Mesa() {
       const caixa = document.querySelector('.mesa')?.getBoundingClientRect()
       if (!caixa) return
       const intencao = document.querySelector('.intencao:not(.intencao-recolhida)')?.getBoundingClientRect()
-      const m = { top: 40, bottom: 40, left: intencao ? intencao.right - caixa.left + 32 : 48, right: s.painel === 'biblioteca' ? 452 : 48 }
+      const m = { top: 76, bottom: 48, left: intencao ? intencao.right - caixa.left + 32 : 48, right: s.painel === 'biblioteca' ? 452 : 48 }
       let ret: { x: number; y: number; width: number; height: number }
       let zMax = 1
       if (id === RAIZ || !d.nos[id]) {
@@ -329,7 +330,7 @@ export function Mesa() {
   const vazio = Object.keys(doc.nos).length === 1
 
   return (
-    <div className="mesa">
+    <div className="mesa" data-lab="8">
       <ReactFlow
         nodes={nodes}
         edges={edges}

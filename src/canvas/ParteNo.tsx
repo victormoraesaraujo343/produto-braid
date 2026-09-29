@@ -30,7 +30,7 @@ function ParteNoBase({ id, selected }: NodeProps) {
   const etapa = n.etapa ? ESTRUTURAS.find((e) => e.id === n.etapa!.estruturaId)?.etapas.find((et) => et.chave === n.etapa!.chave) : undefined
 
   return (
-    <div className={cls('parte', selected && 'sel', alvo && 'alvo', emFoco && 'em-foco', !!n.etapa && 'vaga')}>
+    <div data-lab="4" className={cls('parte', selected && 'sel', alvo && 'alvo', emFoco && 'em-foco', !!n.etapa && 'vaga', vazia && 'vazia')}>
       <NodeResizer isVisible={selected} minWidth={PARTE_MIN.w} minHeight={PARTE_MIN.h}
         lineClassName="parte-resize-linha" handleClassName="parte-resize-alca" />
       <Handle type="target" position={Position.Left} id="t" className="alca alca-parte" />

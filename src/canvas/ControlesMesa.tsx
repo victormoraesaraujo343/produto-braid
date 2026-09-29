@@ -28,8 +28,8 @@ export function ControlesMesa() {
   const botaoAjuda = useRef<HTMLButtonElement>(null)
 
   return (
-    <div className="controles-mesa">
-      <button ref={botaoAjuda} className="controle" aria-label="Atalhos" title="Atalhos" aria-expanded={ajuda}
+    <div className="controles-mesa" data-lab="6">
+      <button ref={botaoAjuda} className="controle controle-extra" aria-label="Atalhos" title="Atalhos" aria-expanded={ajuda}
         onClick={() => setAjuda(!ajuda)}><IcoTeclado /></button>
       <Popover aberto={ajuda} ancora={botaoAjuda} onFechar={() => setAjuda(false)} lado="cima" alinhar="fim" rotulo="Atalhos" className="popover-atalhos">
         <p className="popover-titulo">Na mesa</p>
@@ -37,12 +37,12 @@ export function ControlesMesa() {
           {ATALHOS.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
         </dl>
       </Popover>
-      <span className="controles-sep" />
-      <button className="controle" aria-label="Diminuir zoom" title="Diminuir zoom" onClick={() => rf.zoomOut({ duration: 200 })}><IcoMenos /></button>
+      <span className="controles-sep controle-extra" />
+      <button className="controle controle-extra" aria-label="Diminuir zoom" title="Diminuir zoom" onClick={() => rf.zoomOut({ duration: 200 })}><IcoMenos /></button>
       <button className="controle controle-zoom" title="Voltar para 100%" onClick={() => rf.zoomTo(1, { duration: 250 })}>
         {Math.round(zoom * 100)}%
       </button>
-      <button className="controle" aria-label="Aumentar zoom" title="Aumentar zoom" onClick={() => rf.zoomIn({ duration: 200 })}><IcoMais /></button>
+      <button className="controle controle-extra" aria-label="Aumentar zoom" title="Aumentar zoom" onClick={() => rf.zoomIn({ duration: 200 })}><IcoMais /></button>
       <span className="controles-sep" />
       <button className="controle" aria-label="Enquadrar" title="Enquadrar o nível em foco" onClick={() => focar(foco)}><IcoEnquadrar /></button>
     </div>

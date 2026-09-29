@@ -50,12 +50,13 @@ function Atalhos() {
 export default function App() {
   const pronto = useStore((s) => s.pronto)
   const painel = useStore((s) => s.painel)
+  const escrevendo = useStore((s) => !!s.editando)
 
   if (!pronto) return <div className="carregando">Abrindo a mesa…</div>
 
   return (
     <ReactFlowProvider>
-      <div className="app">
+      <div className="app" data-escrevendo={escrevendo || undefined}>
         <BarraTopo />
         <main className="area">
           <div className="area-mesa">

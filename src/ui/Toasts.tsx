@@ -17,7 +17,7 @@ export function avisar(texto: string, opcoes: { desfazer?: boolean } = {}) {
 export function Toasts() {
   const lista = useToasts((s) => s.lista)
   return (
-    <div className="toasts" role="status" aria-live="polite">
+    <div className="toasts" role="status" aria-live="polite" data-lab="9">
       {lista.map((t) => (
         <div key={t.id} className={cls('toast')}>
           <span>{t.texto}</span>

@@ -14,6 +14,7 @@ import { cls, corNivel, curvaSuave } from '../ui/util'
 import { IcoAviso, IcoBaixo, IcoCheck, IcoCima, IcoCurva, IcoLapis, IcoRitmo } from '../ui/icones'
 import { Popover } from '../ui/Popover'
 import { Seletor } from '../ui/Seletor'
+import { useVariante } from '../lab/refinamento'
 
 const H = 112          // altura da área da curva
 const PAD_Y = 14
@@ -84,8 +85,21 @@ export function Faixa() {
   const [largura, setLargura] = useState(800)
   const [arraste, setArraste] = useState<{ id: string; indice: number; fora: boolean } | null>(null)
   const [avisoAtivo, setAvisoAtivo] = useState<AvisoRitmo | null>(null)
+  const modo = useVariante('faixa')
+  const essencial = modo === 'essencial'
+  const [menuRitmo, setMenuRitmo] = useState(false)
+  const botaoRitmo = useRef<HTMLButtonElement>(null)
+  const secao = useRef<HTMLElement>(null)
   const [menuAlvo, setMenuAlvo] = useState(false)
   const botaoAlvo = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const el = secao.current
+    if (!el) return
+    const ro = new ResizeObserver(() => document.documentElement.style.setProperty('--altura-faixa', `${el.offsetHeight}px`))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [aberta])
 
   useEffect(() => {
     const el = rolagem.current
@@ -214,7 +228,7 @@ export function Faixa() {
 
   if (!aberta) {
     return (
-      <section className={cls('faixa faixa-fechada', sobreFaixa && 'receber')} aria-label="Timeline (fechada)">
+      <section ref={secao} data-lab="7" className={cls('faixa faixa-fechada', sobreFaixa && 'receber')} aria-label="Timeline (fechada)">
         <button className="faixa-alternar" onClick={() => setUI({ faixaAberta: true })} aria-label="Abrir timeline"><IcoCima /></button>
         <span className="faixa-titulo">{titulo}</span>
         <svg className="faixa-mini" viewBox={`0 0 ${Math.max(larguraConteudo, 1)} ${H}`} preserveAspectRatio="none" aria-hidden="true">
@@ -226,12 +240,34 @@ export function Faixa() {
   }
 
   return (
-    <section className={cls('faixa', sobreFaixa && 'receber')} aria-label="Timeline">
+    <section ref={secao} data-lab="7" className={cls('faixa', sobreFaixa && 'receber', essencial && 'essencial')} aria-label="Timeline">
       <header className="faixa-cabeca">
         <button className="faixa-alternar" onClick={() => setUI({ faixaAberta: false })} aria-label="Fechar timeline" title="Fechar timeline"><IcoBaixo /></button>
         <div className="faixa-id">
           <span className="faixa-titulo">{titulo}</span>
-          <span className="faixa-total" title="Duração estimada pelo número de palavras">{fmtTempo(totalT)}</span>
+          {essencial ? (
+            <>
+              <button ref={botaoRitmo} className="faixa-total faixa-total-botao" aria-expanded={menuRitmo} onClick={() => setMenuRitmo(!menuRitmo)}
+                title={`Duração estimada a ${doc.ritmo} palavras por minuto. Clique para mudar o ritmo.`}>
+                {fmtTempo(totalT)}
+              </button>
+              <Popover aberto={menuRitmo} ancora={botaoRitmo} onFechar={() => setMenuRitmo(false)} lado="cima" rotulo="Ritmo de leitura" className="popover-lista">
+                <p className="popover-titulo">Ritmo de leitura</p>
+                <p className="popover-texto">A duração de cada trecho sai do número de palavras.</p>
+                {RITMOS.map((o) => (
+                  <button key={o.valor} className={cls('lista-item', 'lista-botao', doc.ritmo === o.valor && 'ativo')}
+                    onClick={() => { mudar((d) => { d.ritmo = o.valor }, true); setMenuRitmo(false) }}>
+                    <span className="lista-texto"><span className="lista-rotulo">{o.rotulo}</span><span className="lista-detalhe">{o.detalhe}</span></span>
+                    {doc.ritmo === o.valor && <IcoCheck tamanho={14} className="lista-check" />}
+                  </button>
+                ))}
+              </Popover>
+              {soltas.length > 0 && (
+                <button className="faixa-chip" onClick={() => setUI({ selecao: soltas.map((s) => s.id) })}
+                  title="Selecionar na mesa">{soltas.length} fora do fio</button>
+              )}
+            </>
+          ) : <span className="faixa-total" title="Duração estimada pelo número de palavras">{fmtTempo(totalT)}</span>}
         </div>
 
         <div className="faixa-meio">
@@ -247,7 +283,7 @@ export function Faixa() {
               onFocus={() => setAvisoAtivo(avisos[0])} onBlur={() => setAvisoAtivo(null)} title="Passe o mouse para ver o trecho na curva">
               <IcoAviso tamanho={14} /> <span>{avisos[0].texto}{avisos.length > 1 ? ` (+${avisos.length - 1})` : ''}</span>
             </button>
-          ) : folhas.length ? <span className="faixa-dica">Puxe um ponto para mudar a intensidade. Arraste um trecho para mudar a ordem.</span> : null}
+          ) : folhas.length && !essencial ? <span className="faixa-dica">Puxe um ponto para mudar a intensidade. Arraste um trecho para mudar a ordem.</span> : null}
         </div>
 
         <div className="faixa-ferramentas">
@@ -280,8 +316,10 @@ export function Faixa() {
               ))}
             </ul>
           </Popover>
-          <Seletor rotulo="Ritmo de leitura" valor={doc.ritmo} prefixo={<IcoRitmo tamanho={14} />}
-            opcoes={RITMOS} onMudar={(v) => v && mudar((d) => { d.ritmo = v }, true)} />
+          {!essencial && (
+            <Seletor rotulo="Ritmo de leitura" valor={doc.ritmo} prefixo={<IcoRitmo tamanho={14} />}
+              opcoes={RITMOS} onMudar={(v) => v && mudar((d) => { d.ritmo = v }, true)} />
+          )}
         </div>
       </header>
 
@@ -388,7 +426,7 @@ export function Faixa() {
         </div>
       </div>
 
-      {(arraste?.fora || soltas.length > 0) && (
+      {(arraste?.fora || (soltas.length > 0 && !essencial)) && (
         <footer className="faixa-pe">
           {arraste?.fora ? <span className="faixa-pe-aviso">Solte para tirar do fio. A ideia continua na mesa.</span> : (
             <button className="botao-mini" onClick={() => setUI({ selecao: soltas.map((s) => s.id) })}>

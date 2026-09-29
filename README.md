@@ -11,6 +11,10 @@ npm test         # regras do roteiro
 npm run build    # versão final em dist/
 ```
 
+### Laboratório (painel de Refinamento)
+
+Com `npm run dev` aberto, aperte **R** para abrir o painel de Refinamento (o mesmo do lab das lojas). Cada seção do app tem variações para comparar, status, anotação, alfinete na tela (P) e antes/depois por commit (A). As anotações ficam em `laboratorio/app/ANOTACOES.md`; o protocolo está em `laboratorio/refinamento/README.md`. Seções e variações: `src/lab/refinamento.ts`. O painel não existe no build final.
+
 Os roteiros ficam guardados no navegador. Para levar para outro lugar, use "Salvar cópia em arquivo" no menu do roteiro.
 
 ## Onde está cada coisa

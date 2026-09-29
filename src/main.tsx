@@ -11,6 +11,7 @@ import './styles.css'
 import App from './App'
 import { iniciar } from './model/store'
 import { aplicarTema } from './painel/BarraTopo'
+import { montarRefinamento } from './lab/refinamento'
 
 try { aplicarTema((localStorage.getItem('montagem:tema') as never) || 'sistema') } catch { /* sem armazenamento */ }
 iniciar()
@@ -20,3 +21,4 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+montarRefinamento()

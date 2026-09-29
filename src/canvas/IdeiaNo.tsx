@@ -76,6 +76,7 @@ function IdeiaNoBase({ id, selected }: NodeProps) {
 
   return (
     <div
+      data-lab="3"
       className={cls('ideia', selected && 'sel', !noFio && 'solta', editando && 'editando', !n.texto.trim() && 'vazia')}
       style={{ ['--iN' as string]: corNivel(n.intensidade) }}
       // Barra e menus são desenhados fora do cartão, mas os eventos deles sobem pela árvore do React até aqui.

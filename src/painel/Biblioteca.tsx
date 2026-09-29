@@ -162,7 +162,7 @@ export function Biblioteca() {
   const cSel = aba === 'curvas' ? CURVAS.find((c) => c.id === sel) : undefined
 
   return (
-    <aside className="biblioteca" aria-label="Biblioteca de estruturas e curvas">
+    <aside className="biblioteca" aria-label="Biblioteca de estruturas e curvas" data-lab="10">
       <header className="bib-cabeca">
         <div className="segmentado" role="tablist">
           <button role="tab" aria-selected={aba === 'estruturas'} className={cls(aba === 'estruturas' && 'on')} onClick={() => { setAba('estruturas'); setSel(null) }}>Estruturas</button>

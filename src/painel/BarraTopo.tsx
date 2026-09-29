@@ -108,7 +108,7 @@ export function BarraTopo() {
   const trilha = foco === RAIZ ? [] : [...ancestrais(doc, foco).filter((a) => a.id !== RAIZ), doc.nos[foco]]
 
   return (
-    <header className="topo">
+    <header className="topo" data-lab="1">
       <div className="topo-esq" ref={menuRef}>
         <div className="topo-roteiro">
           <Marca />
@@ -123,7 +123,7 @@ export function BarraTopo() {
         {menu && <MenuRoteiros fechar={() => setMenu(false)} />}
       </div>
 
-      <nav className="migalhas" aria-label="Onde você está">
+      <nav className={cls('migalhas', foco === RAIZ && 'na-raiz')} aria-label="Onde você está">
         <button className={cls('migalha', foco === RAIZ && 'atual')} onClick={() => focar(RAIZ)}>Peça inteira</button>
         {trilha.map((n) => (
           <span key={n.id} className="migalha-grupo">
@@ -134,12 +134,12 @@ export function BarraTopo() {
       </nav>
 
       <div className="topo-dir">
-        <button className="icone-btn" onClick={desfazer} disabled={!podeDesfazer} aria-label="Desfazer" title="Desfazer (Ctrl+Z)"><IcoDesfazer /></button>
-        <button className="icone-btn" onClick={refazer} disabled={!podeRefazer} aria-label="Refazer" title="Refazer (Ctrl+Shift+Z)"><IcoRefazer /></button>
-        <span className="topo-sep" />
+        <button className="icone-btn topo-desfazer" onClick={desfazer} disabled={!podeDesfazer} aria-label="Desfazer" title="Desfazer (Ctrl+Z)"><IcoDesfazer /></button>
+        <button className="icone-btn topo-desfazer" onClick={refazer} disabled={!podeRefazer} aria-label="Refazer" title="Refazer (Ctrl+Shift+Z)"><IcoRefazer /></button>
+        <span className={cls('topo-sep', !podeDesfazer && !podeRefazer && 'sem-historico')} />
         <button className={cls('botao', painel === 'biblioteca' && 'ativo')} aria-pressed={painel === 'biblioteca'}
           onClick={() => setUI({ painel: painel === 'biblioteca' ? null : 'biblioteca' })}>
-          <IcoBiblioteca /> Estruturas
+          <IcoBiblioteca /> <span className="rotulo-botao">Estruturas</span>
         </button>
         <button className="botao botao-primario" onClick={() => setUI({ painel: 'texto' })}>
           <IcoTexto /> Texto final

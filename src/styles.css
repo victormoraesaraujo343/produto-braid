@@ -600,3 +600,127 @@ h3.tf-secao { font-size: var(--t-corpo); color: var(--txt-2); margin-top: 28px; 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ============ Peças da rodada "mostrar só o que importa" ============ */
+.intencao-linha {
+  position: absolute; top: var(--e-4); left: var(--e-4); z-index: var(--z-mesa-ui); max-width: min(560px, calc(100% - 32px));
+  display: flex; align-items: center; gap: 10px; padding: 7px 14px 7px 12px; border-radius: var(--r-pilula);
+  background: color-mix(in srgb, var(--sup-painel) 88%, transparent); border: 1px solid var(--borda);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); text-align: left;
+  transition: border-color var(--d-rapida), box-shadow var(--d-rapida); animation: surgir var(--d-media) var(--ease-sai);
+}
+.intencao-linha:hover { border-color: var(--borda-forte); box-shadow: var(--sombra-cartao); }
+.intencao-ponto { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--sinal); }
+.intencao-linha-texto { font-family: var(--f-texto); font-style: italic; font-size: var(--t-ui); color: var(--txt); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.intencao-linha.vazia .intencao-linha-texto { color: var(--txt-3); }
+.intencao-linha-estrutura { flex: none; font-size: var(--t-meta); color: var(--txt-3); padding-left: 10px; border-left: 1px solid var(--borda); }
+
+.intencao-faixa {
+  position: absolute; top: 0; left: 0; right: 0; z-index: var(--z-mesa-ui); display: flex; align-items: center; gap: var(--e-3);
+  padding: 8px var(--e-4); background: color-mix(in srgb, var(--sup-painel) 90%, transparent); border-bottom: 1px solid var(--borda);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.intencao-faixa-campo {
+  flex: 1; min-width: 0; border: 0; background: none; resize: none; field-sizing: content; max-height: 48px; overflow: hidden;
+  font-family: var(--f-texto); font-style: italic; font-size: var(--t-corpo); line-height: 1.5; padding: 2px 4px; border-radius: 5px; caret-color: var(--sinal);
+}
+.intencao-faixa-campo:hover { background: var(--sup-funda); }
+.intencao-faixa-campo:focus { outline: none; background: var(--sup-folha); font-style: normal; }
+.intencao-faixa-campo::placeholder { color: var(--txt-3); }
+.intencao-faixa-estrutura { flex: none; font-size: var(--t-meta); color: var(--txt-3); max-width: 40%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 8px; border-radius: var(--r-controle); }
+.intencao-faixa-estrutura:hover { background: var(--sup-funda); color: var(--txt); }
+.botao-link.discreto { text-decoration-color: var(--borda-forte); color: var(--txt-2); font-weight: var(--p-normal); }
+.botao-link:disabled { color: var(--txt-3); text-decoration: none; cursor: default; }
+
+.faixa-total-botao { padding: 3px 7px; margin: -3px -7px; border-radius: var(--r-controle); transition: background var(--d-rapida), color var(--d-rapida); }
+.faixa-total-botao:hover, .faixa-total-botao[aria-expanded='true'] { background: var(--sup-funda); color: var(--txt); }
+.faixa-chip { font-size: var(--t-meta); color: var(--txt-2); padding: 2px 9px; border-radius: var(--r-pilula); border: 1px dashed var(--borda-forte); transition: background var(--d-rapida); }
+.faixa-chip:hover { background: var(--sup-funda); color: var(--txt); }
+.lista-botao { width: 100%; text-align: left; }
+.toasts { transition: top var(--d-media) var(--ease-sai), bottom var(--d-media) var(--ease-sai); }
+
+/* ============ Variações do laboratório (painel de Refinamento, html[data-*]) ============ */
+
+/* 1 · Barra do topo */
+html[data-topo='enxuta'] .migalhas.na-raiz { visibility: hidden; }
+html[data-topo='enxuta'] .topo-desfazer:disabled, html[data-topo='enxuta'] .topo-sep.sem-historico { display: none; }
+html[data-topo='enxuta'] .topo .rotulo-botao { display: none; }
+html[data-topo='enxuta'] .topo { border-bottom-color: transparent; background: var(--sup-mesa); }
+html[data-topo='flutuante'] .app { grid-template-rows: minmax(0, 1fr); }
+html[data-topo='flutuante'] .topo { position: fixed; top: 12px; left: 12px; right: 12px; height: auto; padding: 0; background: none; border: 0; pointer-events: none; }
+html[data-topo='flutuante'] .topo > * { pointer-events: auto; }
+html[data-topo='flutuante'] .topo-roteiro, html[data-topo='flutuante'] .topo-dir {
+  background: color-mix(in srgb, var(--sup-painel) 90%, transparent); border: 1px solid var(--borda); border-radius: var(--r-pilula);
+  padding: 4px 6px 4px 10px; box-shadow: var(--sombra-cartao); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+html[data-topo='flutuante'] .topo-dir { padding: 4px; }
+html[data-topo='flutuante'] .topo .botao { border-radius: var(--r-pilula); }
+html[data-topo='flutuante'] .migalhas { flex: none; background: color-mix(in srgb, var(--sup-painel) 90%, transparent); border-radius: var(--r-pilula); padding: 2px; }
+html[data-topo='flutuante'] .migalhas.na-raiz { visibility: hidden; }
+html[data-topo='flutuante'] .topo-dir { margin-left: auto; }
+html[data-topo='flutuante'] .topo-desfazer:disabled, html[data-topo='flutuante'] .topo-sep.sem-historico { display: none; }
+html[data-topo='flutuante'] .intencao-linha, html[data-topo='flutuante'] .intencao { top: 64px; }
+html[data-topo='flutuante'] .intencao-faixa { top: 60px; left: 12px; right: 12px; border: 1px solid var(--borda); border-radius: var(--r-cartao); }
+html[data-topo='flutuante'] .toasts { top: 72px; }
+
+/* 3 · Cartão de ideia */
+html[data-cartao='minimo'] .ideia:not(.sel):not(.editando) .ideia-funcao { font-size: 0; gap: 0; }
+html[data-cartao='minimo'] .ideia-num { background: none; padding: 0; color: var(--txt-3); }
+html[data-cartao='minimo'] .ideia:not(.sel):not(.editando) .ideia-rodape { display: none; }
+html[data-cartao='minimo'] .ideia { padding: 12px 14px; }
+html[data-cartao='minimo'] .ideia-topo { min-height: 14px; margin-bottom: 4px; }
+html[data-cartao='folha'] .ideia { background: transparent; box-shadow: none; border-color: transparent; }
+html[data-cartao='folha'] .ideia:hover { background: color-mix(in srgb, var(--sup-folha) 55%, transparent); border-color: transparent; }
+html[data-cartao='folha'] .ideia.sel, html[data-cartao='folha'] .ideia.editando { background: var(--sup-folha); }
+html[data-cartao='folha'] .ideia.solta { border: 0; }
+html[data-cartao='folha'] .ideia.solta .ideia-texto { color: var(--txt-2); }
+html[data-cartao='folha'] .ideia-num { background: none; padding: 0; color: var(--txt-3); }
+html[data-cartao='folha'] .ideia:not(.sel):not(.editando) .ideia-rodape { display: none; }
+
+/* 4 · Parte */
+html[data-parte='discreta'] .parte:not(:hover):not(.sel):not(.em-foco) :is(.parte-dur, .parte-entrar, .parte-estrutura) { opacity: 0; }
+html[data-parte='discreta'] :is(.parte-dur, .parte-entrar, .parte-estrutura) { transition: opacity var(--d-media); }
+html[data-parte='discreta'] .parte:not(:hover):not(.sel):not(.vazia) .parte-intencao:placeholder-shown { opacity: 0; }
+html[data-parte='discreta'] .parte-vazia-acao { display: none; }
+html[data-parte='aba'] .parte { background: transparent; border-style: dashed; border-color: var(--borda-forte); }
+html[data-parte='aba'] .parte.sel { border-style: solid; }
+html[data-parte='aba'] .parte-cabeca {
+  width: fit-content; max-width: calc(100% - 24px); margin: -1px 0 0 12px; padding: 7px 8px 7px 10px; background: var(--sup-painel);
+  border: 1px solid var(--borda-forte); border-top: 0; border-radius: 0 0 var(--r-cartao) var(--r-cartao);
+}
+html[data-parte='aba'] .parte-titulo { field-sizing: content; min-width: 6ch; }
+html[data-parte='aba'] .parte:not(:hover):not(.sel) :is(.parte-dur, .parte-entrar) { opacity: 0; }
+html[data-parte='aba'] .parte-estrutura { display: none; }
+
+/* 5 · Ligações */
+html[data-ligacoes='pontos'] .aresta-rotulo:not(:hover):not(.sel) { width: 9px; height: 9px; padding: 0; border: 1.5px solid var(--txt-3); background: var(--sup-mesa); }
+html[data-ligacoes='pontos'] .aresta-rotulo.rot-fundir:not(:hover):not(.sel) { border-color: var(--i4); }
+html[data-ligacoes='pontos'] .aresta-rotulo:not(:hover):not(.sel) > * { display: none; }
+html[data-ligacoes='foco'] .react-flow__edge-ligacao:not(.perto):not(.selected) { opacity: 0.18; }
+html[data-ligacoes='foco'] .aresta-rotulo:not(.perto):not(.sel):not(:hover) { opacity: 0; }
+
+/* 6 · Controles da mesa */
+html[data-controles='compactos'] .controles-mesa:not(:hover):not(:focus-within) .controle-extra { display: none; }
+html[data-controles='escondidos'] .controles-mesa { opacity: 0; transition: opacity var(--d-media); }
+html[data-controles='escondidos'] .controles-mesa::before { content: ''; position: absolute; inset: -40px -16px -16px -80px; }
+html[data-controles='escondidos'] .controles-mesa:hover, html[data-controles='escondidos'] .controles-mesa:focus-within { opacity: 1; }
+
+/* 7 · Timeline essencial */
+.faixa.essencial .curva-ponto:not(:hover):not(.sel) .curva-funcao { opacity: 0; }
+.faixa.essencial .curva-funcao { transition: opacity var(--d-rapida); }
+.faixa.essencial .faixa-ferramentas .seletor:not(.com-valor):not(.ativo) .seletor-valor { display: none; }
+.faixa.essencial .curva-guia-rot { opacity: 0.6; }
+
+/* 8 · Mesa enquanto escreve */
+html[data-escrita='foco'] .app[data-escrevendo] :is(.intencao-linha, .intencao, .intencao-faixa, .controles-mesa, .barra-grupo) { opacity: 0; pointer-events: none; }
+html[data-escrita='foco'] .app[data-escrevendo] .react-flow__node:not(:has(.editando)):not(.react-flow__node-parte) { opacity: 0.35; }
+html[data-escrita='foco'] .app[data-escrevendo] .react-flow__edges, html[data-escrita='foco'] .app[data-escrevendo] .aresta-rotulo { opacity: 0.25; }
+html[data-escrita='foco'] .app[data-escrevendo] .faixa { opacity: 0.6; }
+html[data-escrita='foco'] :is(.intencao-linha, .intencao, .intencao-faixa, .controles-mesa, .faixa, .react-flow__edges) { transition: opacity var(--d-lenta) var(--ease-sai); }
+
+/* 9 · Avisos */
+html[data-avisos='base'] .toasts { top: auto; bottom: calc(var(--altura-faixa, 240px) + 16px); }
+html[data-avisos='base'] .toast { animation-name: surgir; }
+
+/* Laboratório: o botão do Refinamento fica acima da timeline, sem cobrir o primeiro trecho. */
+.rf-botao { bottom: calc(var(--altura-faixa, 240px) + 16px) !important; }

@@ -40,7 +40,7 @@ function LigacaoBase(p: EdgeProps) {
       <BaseEdge id={p.id} path={path} markerEnd={tipo === 'explica' ? p.markerEnd : undefined}
         className={cls('ligacao', `lig-${tipo}`, p.selected && 'sel')} interactionWidth={16} />
       <EdgeLabelRenderer>
-        <div className={cls('aresta-rotulo nodrag nopan', `rot-${tipo}`, p.selected && 'sel')}
+        <div data-lab="5" className={cls('aresta-rotulo nodrag nopan', `rot-${tipo}`, p.selected && 'sel', !!p.data?.perto && 'perto')}
           style={{ transform: `translate(-50%, -50%) translate(${lx}px, ${ly}px)` }}>
           {tipo === 'explica' ? <span>explica</span> : (
             <button className="aresta-juntar" title="Junta as duas ideias numa só (dá para desfazer)"
