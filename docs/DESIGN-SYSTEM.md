@@ -1,4 +1,4 @@
-# Design system — Montagem (v1)
+# Design system — Enredo (v1)
 
 > Simples de propósito. Fonte da verdade: `src/design/tokens.css` (significado) sobre `src/design/identidade.css` (cores da identidade do Victor, sincronizadas com `npm run identidade:sync`).
 > Os componentes em `src/styles.css` só usam tokens. Nenhuma cor escrita direto.

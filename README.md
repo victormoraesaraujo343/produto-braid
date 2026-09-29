@@ -1,6 +1,6 @@
-# Montagem (nome provisório)
+# Enredo
 
-Ferramenta de escrita para quem pensa de forma não linear: você joga as ideias numa mesa, liga e agrupa, dá uma ordem (o fio), vê a narrativa no tempo com a curva de intensidade, e no fim tira um texto linear pronto.
+Ferramenta de escrita para quem pensa de forma não linear: você joga as ideias numa mesa, liga e agrupa, dá uma ordem (o fio), vê a narrativa no tempo com a curva de intensidade, e no fim tira um texto linear pronto. O nome vem do duplo sentido: enredo é a trama de uma história e também um emaranhado. O app vai de um para o outro.
 
 ## Rodar
 

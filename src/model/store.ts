@@ -103,6 +103,7 @@ export const refazer = () => useStore.temporal.getState().redo()
 
 // ---------- persistência (IndexedDB, só neste navegador) ----------
 
+// As chaves guardam o nome antigo (Montagem) de propósito: trocar apagaria os roteiros já salvos no navegador.
 const CHAVE_LISTA = 'montagem:lista'
 const CHAVE_ULTIMO = 'montagem:ultimo'
 const chaveDoc = (id: string) => `montagem:doc:${id}`

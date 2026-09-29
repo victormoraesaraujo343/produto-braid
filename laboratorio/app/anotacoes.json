@@ -1,0 +1,93 @@
+{
+  "rodada": {
+    "numero": 1,
+    "aberta_em": "2026-09-29T18:45:17.256Z"
+  },
+  "geral": "",
+  "secoes": {
+    "1": {
+      "nome": "Barra do topo",
+      "status": "aprovada",
+      "nota": "",
+      "variantes": {
+        "topo": "completa"
+      },
+      "aberto": false
+    },
+    "2": {
+      "nome": "Intenção",
+      "status": "aprovada",
+      "nota": "",
+      "variantes": {
+        "intencao": "linha"
+      },
+      "aberto": false
+    },
+    "3": {
+      "nome": "Cartão de ideia",
+      "status": "aprovada",
+      "nota": "",
+      "variantes": {
+        "cartao": "minimo"
+      },
+      "aberto": false
+    },
+    "4": {
+      "nome": "Parte (moldura)",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "parte": "completa"
+      },
+      "aberto": false
+    },
+    "5": {
+      "nome": "Ligações e rótulos",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "ligacoes": "pontos"
+      },
+      "aberto": false
+    },
+    "6": {
+      "nome": "Controles da mesa",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "controles": "compactos"
+      },
+      "aberto": false
+    },
+    "7": {
+      "nome": "Timeline",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "faixa": "essencial"
+      },
+      "aberto": false
+    },
+    "8": {
+      "nome": "Mesa enquanto escreve",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "escrita": "foco"
+      },
+      "aberto": false
+    },
+    "9": {
+      "nome": "Avisos com Desfazer",
+      "status": "ajustar",
+      "nota": "",
+      "variantes": {
+        "avisos": "topo"
+      },
+      "aberto": false
+    }
+  },
+  "alfinetes": [],
+  "rodadas": [],
+  "atualizado": "2026-09-29T19:15:51.686Z"
+}
