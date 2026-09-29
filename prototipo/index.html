@@ -1,0 +1,1179 @@
+<title>Montagem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: editor de vídeo de cabeça para baixo — canvas de pensar em cima, timeline de montar embaixo, gaveta de soltos à direita. */
+:root {
+  --bg: #E9ECF1;
+  --dot: #C3C9D4;
+  --panel: #F7F8FA;
+  --card: #FFFFFF;
+  --line: #D5DAE2;
+  --fg: #151922;
+  --muted: #5D6575;
+  --accent: #2E43C9;
+  --accent-ink: #FFFFFF;
+  --seq: #2B3242;
+  --rel: #8A93A5;
+  --i1: #5E86B8;
+  --i2: #3E9A8F;
+  --i3: #C39A2E;
+  --i4: #D8692F;
+  --i5: #C73349;
+  --warn: #B4531B;
+  --shadow: 0 1px 2px rgba(21, 25, 34, .06), 0 4px 14px rgba(21, 25, 34, .06);
+  --f-ui: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-texto: "Literata", Georgia, "Times New Roman", serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1116; --dot: #232937; --panel: #141820; --card: #1A1F29; --line: #2A303D;
+    --fg: #E6E9EF; --muted: #8D95A5; --accent: #8E9BFF; --accent-ink: #0E1116;
+    --seq: #C9CFDB; --rel: #6B7487;
+    --i1: #7FA5D6; --i2: #57B8AC; --i3: #DDB54A; --i4: #F0864C; --i5: #EC5A70;
+    --warn: #F0955A; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1116; --dot: #232937; --panel: #141820; --card: #1A1F29; --line: #2A303D;
+  --fg: #E6E9EF; --muted: #8D95A5; --accent: #8E9BFF; --accent-ink: #0E1116;
+  --seq: #C9CFDB; --rel: #6B7487;
+  --i1: #7FA5D6; --i2: #57B8AC; --i3: #DDB54A; --i4: #F0864C; --i5: #EC5A70;
+  --warn: #F0955A; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.28);
+  color-scheme: dark;
+}
+
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--f-ui); font-size: 14px; line-height: 1.4;
+  overflow: hidden;
+}
+* { box-sizing: border-box; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+
+/* ---------- barra ---------- */
+.barra {
+  display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap;
+  padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.marca { font-weight: 700; letter-spacing: -.01em; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.marca svg { display: block; }
+.titulo-roteiro {
+  border: 1px solid transparent; background: none; border-radius: 6px;
+  padding: 4px 8px; font-size: 15px; font-weight: 500; min-width: 0; width: 22ch; max-width: 100%;
+}
+.titulo-roteiro:hover { border-color: var(--line); }
+.titulo-roteiro:focus { border-color: var(--accent); outline: none; background: var(--card); }
+.resumo { color: var(--muted); font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.resumo b { color: var(--fg); font-weight: 500; }
+.espaco { flex: 1; }
+.grupo { display: flex; align-items: center; gap: 8px; }
+.rotulo { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+select, .btn {
+  border: 1px solid var(--line); background: var(--card); border-radius: 7px;
+  padding: 6px 10px; font-size: 13px; line-height: 1.2;
+}
+.btn:hover { border-color: var(--muted); }
+.btn.primario { background: var(--fg); color: var(--bg); border-color: var(--fg); font-weight: 600; }
+.btn.primario:hover { opacity: .9; }
+.btn.fantasma { background: none; border-color: transparent; color: var(--muted); }
+.btn.fantasma:hover { color: var(--fg); border-color: var(--line); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--card); }
+.seg button { border: 0; background: none; padding: 6px 10px; font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+
+/* ---------- canvas ---------- */
+.canvas {
+  position: relative; overflow: hidden; touch-action: none; cursor: grab;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+.canvas.movendo { cursor: grabbing; }
+.mundo { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.mundo.suave { transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.fios { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+.fio { fill: none; stroke-width: 2; }
+.fio.seq { stroke: var(--seq); }
+.fio.rel { stroke: var(--rel); stroke-dasharray: 5 6; stroke-width: 1.6; }
+.fio.sel { stroke: var(--accent); }
+.fio-hit { fill: none; stroke: transparent; stroke-width: 14; pointer-events: stroke; cursor: pointer; }
+.fio-tmp { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 4; }
+.fio-x { cursor: pointer; pointer-events: all; }
+.fio-x circle { fill: var(--card); stroke: var(--accent); stroke-width: 1.5; }
+.fio-x path { stroke: var(--accent); stroke-width: 1.6; }
+
+.bloco {
+  position: absolute; width: 272px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; box-shadow: var(--shadow); cursor: default;
+}
+.bloco.solto { border-style: dashed; box-shadow: none; }
+.bloco.solto .b-txt, .bloco.solto .b-tit { opacity: .78; }
+.bloco.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+.bloco.ciclo { border-color: var(--warn); }
+.b-head { display: flex; align-items: center; gap: 6px; padding: 8px 8px 4px 10px; cursor: grab; }
+.b-ord {
+  flex: none; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px;
+  display: grid; place-items: center; font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+  background: var(--iN, var(--line)); color: var(--card); font-variant-numeric: tabular-nums;
+}
+.bloco.solto .b-ord { background: none; color: var(--muted); border: 1px dashed var(--rel); font-family: var(--f-ui); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+.b-tit { flex: 1; min-width: 0; border: 0; background: none; font-weight: 600; font-size: 14px; padding: 2px 4px; border-radius: 4px; }
+.b-tit:focus { outline: none; background: var(--bg); }
+.b-icon { flex: none; width: 24px; height: 24px; border: 0; background: none; border-radius: 6px; color: var(--muted); display: grid; place-items: center; }
+.b-icon:hover { background: var(--bg); color: var(--fg); }
+.b-icon[aria-pressed="true"] { color: var(--accent); }
+.b-txt {
+  display: block; width: 100%; border: 0; background: none; resize: none; overflow: hidden;
+  padding: 2px 14px 8px; font-family: var(--f-texto); font-size: 14px; line-height: 1.55; min-height: 48px; max-height: 340px;
+}
+.b-txt:focus { outline: none; }
+.b-txt::placeholder, .b-tit::placeholder { color: var(--muted); opacity: .7; }
+.b-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px 8px 12px; border-top: 1px solid var(--line); }
+.b-meta { font-family: var(--f-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.medidor { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+.medidor button { width: 9px; border: 0; padding: 0; border-radius: 2px; background: var(--line); }
+.medidor button:nth-child(1) { height: 6px; } .medidor button:nth-child(2) { height: 9px; }
+.medidor button:nth-child(3) { height: 12px; } .medidor button:nth-child(4) { height: 15px; }
+.medidor button:nth-child(5) { height: 18px; }
+.medidor button.on { background: var(--iN); }
+.medidor-rot { font-size: 11px; color: var(--muted); margin-left: 6px; }
+.porta {
+  position: absolute; top: 15px; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--seq);
+}
+.porta.in { left: -8px; pointer-events: none; opacity: .5; }
+.porta.out { right: -8px; cursor: crosshair; }
+.porta.out:hover, .porta.out.ativa { background: var(--accent); border-color: var(--accent); transform: scale(1.2); }
+.bloco.alvo { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
+
+.dica {
+  position: absolute; left: 12px; bottom: 12px; max-width: calc(100% - 180px);
+  font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 10px; pointer-events: none;
+}
+.dica kbd { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; background: var(--card); }
+.zoom { position: absolute; right: 12px; bottom: 12px; display: flex; gap: 4px; }
+.zoom .btn { padding: 5px 9px; background: var(--panel); }
+.zoom .valor { font-family: var(--f-mono); font-size: 11px; min-width: 48px; text-align: center; }
+
+/* ---------- timeline ---------- */
+.timeline {
+  background: var(--panel); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: minmax(0, 1fr) 232px; height: 272px;
+}
+.tl-main { display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; }
+.tl-head { display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; padding: 8px 16px; border-bottom: 1px solid var(--line); }
+.tl-head h2, .gaveta h2 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; font-weight: 600; color: var(--muted); }
+.legenda { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+.legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.check input { accent-color: var(--accent); }
+.tl-scroll { overflow-x: auto; overflow-y: hidden; position: relative; }
+.tl-inner { position: relative; height: 100%; min-width: 100%; padding-inline: 12px; }
+.regua { position: relative; height: 22px; border-bottom: 1px solid var(--line); }
+.regua span {
+  position: absolute; top: 5px; font-family: var(--f-mono); font-size: 10px; color: var(--muted);
+  transform: translateX(3px); font-variant-numeric: tabular-nums;
+}
+.regua span::before { content: ""; position: absolute; left: -3px; top: -5px; height: 22px; border-left: 1px solid var(--line); }
+.curva { display: block; position: relative; touch-action: none; }
+.curva.desenho { cursor: crosshair; }
+.curva .guia { stroke: var(--line); stroke-width: 1; }
+.curva .guia-rot { font-family: var(--f-mono); font-size: 9px; fill: var(--muted); }
+.curva .real { fill: none; stroke: var(--fg); stroke-width: 2; }
+.curva .plan { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 5; opacity: .9; }
+.curva .desvio { stroke: var(--warn); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.curva .ponto { cursor: ns-resize; }
+.curva .ponto circle.vis { stroke-width: 2.5; fill: var(--card); }
+.curva .ponto:hover circle.vis, .curva .ponto.sel circle.vis { r: 7; }
+.curva .ponto text { font-family: var(--f-mono); font-size: 10px; fill: var(--fg); }
+.faixa { position: relative; height: 62px; margin-top: 4px; }
+.clipe {
+  position: absolute; top: 0; height: 56px; border-radius: 6px; overflow: hidden;
+  background: color-mix(in srgb, var(--iN) 20%, var(--card));
+  border: 1px solid color-mix(in srgb, var(--iN) 55%, var(--line));
+  border-top: 3px solid var(--iN);
+  padding: 5px 7px; cursor: grab; user-select: none; touch-action: none;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.clipe:hover .clipe-x { opacity: 1; }
+.clipe.sel { outline: 2px solid var(--accent); outline-offset: 1px; }
+.clipe.fantasma { opacity: .3; }
+.clipe.vazio { background: repeating-linear-gradient(135deg, var(--card) 0 6px, var(--bg) 6px 12px); }
+.clipe.fora { box-shadow: inset 0 -3px 0 var(--warn); }
+.clipe-t { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clipe-t small { font-family: var(--f-mono); font-weight: 500; color: var(--muted); margin-right: 4px; }
+.clipe-d { font-family: var(--f-mono); font-size: 10px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.clipe-x {
+  position: absolute; right: 3px; top: 2px; width: 18px; height: 18px; border: 0; border-radius: 4px;
+  background: var(--card); color: var(--muted); font-size: 13px; line-height: 1; opacity: 0; display: grid; place-items: center;
+}
+.clipe-x:hover { color: var(--fg); }
+.clipe-x:focus-visible { opacity: 1; }
+.marcador { position: absolute; top: -4px; bottom: -2px; width: 3px; border-radius: 2px; background: var(--accent); pointer-events: none; }
+.vazio-tl { position: absolute; inset: 8px 12px; display: grid; place-items: center; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 13px; text-align: center; padding: 8px; }
+
+.gaveta { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; }
+.gaveta.alvo { background: color-mix(in srgb, var(--accent) 8%, var(--panel)); }
+.gaveta-head { padding: 10px 14px 8px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.gaveta-head p { margin: 0; font-size: 11px; color: var(--muted); }
+.gaveta ul { list-style: none; margin: 0; padding: 8px; overflow-y: auto; display: grid; gap: 6px; align-content: start; }
+.chip {
+  display: flex; align-items: center; gap: 8px; border: 1px dashed var(--rel); border-radius: 7px;
+  background: var(--card); padding: 6px 6px 6px 8px; cursor: grab; touch-action: none; user-select: none;
+}
+.chip .dotI { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--iN); }
+.chip span.t { flex: 1; min-width: 0; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip .add { flex: none; border: 1px solid var(--line); background: var(--panel); border-radius: 5px; font-size: 11px; padding: 2px 6px; color: var(--muted); }
+.chip .add:hover { color: var(--fg); border-color: var(--muted); }
+.gaveta .nada { color: var(--muted); font-size: 12px; padding: 6px; }
+
+.arrastado {
+  position: fixed; z-index: 50; pointer-events: none; padding: 6px 10px; border-radius: 7px;
+  background: var(--card); border: 1px solid var(--accent); box-shadow: var(--shadow);
+  font-size: 12px; font-weight: 600; transform: translate(-50%, -130%); white-space: nowrap;
+}
+
+/* ---------- renderizar ---------- */
+.veu { position: fixed; inset: 0; z-index: 40; background: color-mix(in srgb, var(--fg) 40%, transparent); display: grid; place-items: center; padding: 16px; }
+.painel {
+  width: min(1040px, 100%); max-height: min(92%, 760px); background: var(--panel); border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: var(--shadow); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; overflow: hidden;
+}
+.painel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.painel-head h2 { margin: 0; font-size: 17px; letter-spacing: -.01em; }
+.painel-head p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.painel-corpo { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 0; }
+.opcoes { padding: 16px 18px; border-right: 1px solid var(--line); overflow-y: auto; display: grid; gap: 18px; align-content: start; }
+.opcoes fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 6px; }
+.opcoes legend { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; padding: 0; }
+.opc { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; cursor: pointer; }
+.opc input { accent-color: var(--accent); margin-top: 3px; }
+.opc small { display: block; color: var(--muted); font-size: 11px; }
+.relatorio { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 12px; margin: 0; }
+.relatorio dt { color: var(--muted); }
+.relatorio dd { margin: 0; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.avisos { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 12px; }
+.avisos li { border-left: 2px solid var(--warn); padding-left: 8px; color: var(--muted); }
+.previa { overflow: auto; padding: 22px 28px; background: var(--card); min-width: 0; }
+.previa pre {
+  margin: 0 auto; max-width: 68ch; white-space: pre-wrap; word-wrap: break-word;
+  font-family: var(--f-texto); font-size: 15px; line-height: 1.65;
+}
+.previa pre.mono { font-family: var(--f-mono); font-size: 13px; line-height: 1.6; }
+.painel-pe { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 18px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.painel-pe .status { margin-right: auto; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .titulo-roteiro { width: 100%; order: 3; }
+  .barra .espaco { display: none; }
+  .timeline { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .tl-main { height: 236px; }
+  .gaveta { border-left: 0; border-top: 1px solid var(--line); max-height: 140px; }
+  .gaveta ul { grid-auto-flow: column; grid-auto-columns: minmax(160px, 1fr); overflow-x: auto; overflow-y: hidden; }
+  .dica { display: none; }
+  .painel-corpo { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
+  .opcoes { border-right: 0; border-bottom: 1px solid var(--line); }
+  .previa { overflow: visible; padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mundo.suave { transition: none; }
+  * { scroll-behavior: auto; }
+}
+</style>
+
+<div class="app">
+  <header class="barra">
+    <div class="marca" aria-label="Montagem">
+      <svg width="22" height="18" viewBox="0 0 22 18" aria-hidden="true">
+        <rect x="1" y="11" width="6" height="6" rx="1.5" fill="var(--i1)"></rect>
+        <rect x="8" y="11" width="5" height="6" rx="1.5" fill="var(--i3)"></rect>
+        <rect x="14" y="11" width="7" height="6" rx="1.5" fill="var(--i5)"></rect>
+        <path d="M2 8 C6 8 7 5 10 5 S15 1 20 1" fill="none" stroke="var(--fg)" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      Montagem
+    </div>
+    <input id="titulo" class="titulo-roteiro" aria-label="Título do roteiro" placeholder="Roteiro sem título">
+    <div class="resumo" id="resumo"></div>
+    <div class="espaco"></div>
+    <div class="grupo">
+      <div class="seg" role="group" aria-label="Ligar como">
+        <button id="modo-seq" aria-pressed="true" title="Sequência: entra na montagem">
+          <svg width="18" height="8" aria-hidden="true"><path d="M1 4h13" stroke="currentColor" stroke-width="2"></path><path d="M12 1l4 3-4 3z" fill="currentColor"></path></svg>Sequência
+        </button>
+        <button id="modo-rel" aria-pressed="false" title="Relação: só liga ideias (ou segure Shift)">
+          <svg width="18" height="8" aria-hidden="true"><path d="M1 4h16" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"></path></svg>Relação
+        </button>
+      </div>
+    </div>
+    <div class="grupo">
+      <label class="rotulo" for="ritmo" title="Palavras por minuto: define a duração de cada bloco">Ritmo</label>
+      <select id="ritmo">
+        <option value="130">130/min · fala lenta</option>
+        <option value="150">150/min · fala</option>
+        <option value="180">180/min · fala rápida</option>
+        <option value="230">230/min · leitura</option>
+      </select>
+    </div>
+    <div class="grupo">
+      <button class="btn fantasma" id="exemplo">Exemplo</button>
+      <button class="btn fantasma" id="limpar">Limpar</button>
+      <button class="btn" id="novo">+ Bloco</button>
+      <button class="btn primario" id="abrir-render">Renderizar</button>
+    </div>
+  </header>
+
+  <main class="canvas" id="canvas" aria-label="Canvas do roteiro">
+    <div class="mundo" id="mundo">
+      <svg class="fios" id="fios"></svg>
+    </div>
+    <div class="dica">Duplo clique cria bloco · arraste a bolinha <b>●</b> até outro bloco para ligar · <kbd>Shift</kbd> liga como relação · <kbd>Ctrl</kbd>+roda dá zoom</div>
+    <div class="zoom">
+      <button class="btn" id="z-menos" aria-label="Diminuir zoom">−</button>
+      <button class="btn valor" id="z-valor" title="Voltar para 100%">100%</button>
+      <button class="btn" id="z-mais" aria-label="Aumentar zoom">+</button>
+      <button class="btn" id="z-fit">Enquadrar</button>
+    </div>
+  </main>
+
+  <section class="timeline" aria-label="Timeline">
+    <div class="tl-main">
+      <div class="tl-head">
+        <h2>Timeline</h2>
+        <div class="legenda" aria-label="Legenda de intensidade">
+          <span><i style="background:var(--i1)"></i>1 calmo</span>
+          <span><i style="background:var(--i2)"></i>2</span>
+          <span><i style="background:var(--i3)"></i>3</span>
+          <span><i style="background:var(--i4)"></i>4</span>
+          <span><i style="background:var(--i5)"></i>5 pico</span>
+        </div>
+        <div class="espaco" style="flex:1"></div>
+        <label class="check"><input type="checkbox" id="plan-on"> Curva planejada</label>
+        <button class="btn fantasma" id="plan-apagar" hidden>Apagar curva</button>
+      </div>
+      <div class="tl-scroll" id="tl-scroll">
+        <div class="tl-inner" id="tl-inner">
+          <div class="regua" id="regua"></div>
+          <svg class="curva" id="curva" height="104"></svg>
+          <div class="faixa" id="faixa"></div>
+        </div>
+      </div>
+    </div>
+    <aside class="gaveta" id="gaveta" aria-label="Blocos soltos">
+      <div class="gaveta-head"><h2>Gaveta</h2><p id="gaveta-n"></p></div>
+      <ul id="gaveta-lista"></ul>
+    </aside>
+  </section>
+</div>
+
+<div class="veu" id="veu" hidden>
+  <div class="painel" role="dialog" aria-modal="true" aria-labelledby="r-tit">
+    <div class="painel-head">
+      <div>
+        <h2 id="r-tit">Renderizar</h2>
+        <p>Junta os blocos da montagem, na ordem da timeline, num texto contínuo.</p>
+      </div>
+      <button class="btn fantasma" id="fechar-render" aria-label="Fechar">Fechar</button>
+    </div>
+    <div class="painel-corpo">
+      <div class="opcoes">
+        <fieldset>
+          <legend>Formato</legend>
+          <label class="opc"><input type="radio" name="fmt" id="fmt-corrido" value="corrido" checked><span>Texto corrido<small>Para ler e revisar</small></span></label>
+          <label class="opc"><input type="radio" name="fmt" id="fmt-tempos" value="tempos"><span>Roteiro com tempos<small>Marca onde cada bloco começa</small></span></label>
+          <label class="opc"><input type="radio" name="fmt" id="fmt-md" value="md"><span>Markdown<small>Para colar em Notion, Docs, GitHub</small></span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Incluir</legend>
+          <label class="opc"><input type="checkbox" id="op-titulos" checked><span>Títulos dos blocos</span></label>
+          <label class="opc"><input type="checkbox" id="op-int"><span>Intensidade como nota</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Entre blocos</legend>
+          <label class="opc"><input type="radio" name="sep" id="sep-linha" value="linha" checked><span>Linha em branco</span></label>
+          <label class="opc"><input type="radio" name="sep" id="sep-ast" value="ast"><span>* * *</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Resumo</legend>
+          <dl class="relatorio" id="relatorio"></dl>
+        </fieldset>
+        <ul class="avisos" id="avisos"></ul>
+      </div>
+      <div class="previa"><pre id="previa"></pre></div>
+    </div>
+    <div class="painel-pe">
+      <span class="status" id="r-status" role="status"></span>
+      <button class="btn primario" id="copiar">Copiar texto</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const LARG = 272, PORTA_Y = 22, CHAVE = 'montagem.v1', N_PLAN = 120;
+  const $ = (s) => document.getElementById(s);
+  const uid = () => 'b' + Math.random().toString(36).slice(2, 9);
+  const NIVEL = ['', 'calmo', 'morno', 'médio', 'alto', 'pico'];
+
+  // ---------- exemplo ----------
+  function exemplo() {
+    const B = (id, titulo, x, y, intensidade, texto) => ({ id, titulo, x, y, intensidade, texto });
+    return {
+      titulo: 'Por que todo site parece igual',
+      ritmo: 150,
+      inicio: 'g1',
+      planejada: null,
+      mostrarPlanejada: false,
+      blocos: [
+        B('g1', 'Gancho', 60, 60, 4, 'Três sites abertos lado a lado. Mesmo fundo creme, mesma fonte serifada no título, mesmo botão laranja no canto. Um vende café, outro vende software, o terceiro é de um escritório de advocacia. Quem copiou quem? Ninguém. E é exatamente isso que devia preocupar a gente.'),
+        B('g2', 'Contexto', 400, 150, 2, 'Nos últimos dois anos, boa parte dos sites novos passou por alguma ferramenta que monta o layout sozinha. Você descreve o negócio e ela devolve uma página pronta. Isso é ótimo para sair do zero. O problema aparece quando todo mundo sai do mesmo zero, com as mesmas instruções e os mesmos modelos por trás.'),
+        B('g3', 'Como a média acontece', 740, 60, 3, 'Essas ferramentas aprenderam com milhões de sites. Quando você pede algo moderno e confiável, elas não inventam: devolvem a resposta mais provável. E a resposta mais provável é a média de tudo que já foi feito. Não é preguiça da máquina, é estatística. O resultado é um design que não erra, mas também não diz nada.'),
+        B('g4', 'A virada', 1080, 170, 5, 'Agora a parte desconfortável. Eu fui olhar os meus últimos cinco projetos. Três deles tinham a mesma estrutura: título grande à esquerda, imagem à direita, três cartões embaixo. Eu não usei nenhuma ferramenta automática. Cheguei na média sozinho, só por repetir o que funcionava.'),
+        B('g5', 'Respiro', 1420, 60, 1, 'Vale parar aqui um segundo. Repetir o que funciona não é defeito, é como qualquer ofício amadurece. O tipógrafo do século dezenove também repetia grade, margem e corpo de letra. A diferença é que ele sabia por que estava repetindo. A pergunta não é se você segue padrões. É se você escolheu segui-los.'),
+        B('g6', 'O que fazer', 1760, 160, 3, 'Três perguntas antes de abrir qualquer ferramenta. Primeiro: qual detalhe só o meu cliente tem? Uma unidade de medida, um jargão, um objeto do dia a dia dele. Segundo: onde eu quero ser ousado, em um lugar só? Terceiro: se eu tirar o logo, alguém ainda reconhece de quem é a página? Se a resposta for não, a página ainda não começou.'),
+        B('g7', 'Fechamento', 2100, 60, 4, 'Volta nos três sites do começo. Troca o creme por uma cor que só faz sentido para café. Troca a serifa genérica por uma letra que parece rótulo de saco de grão. De repente, é outra marca. Não precisou de ferramenta nova. Precisou de uma decisão. Se esse vídeo te fez olhar diferente para o seu último projeto, me conta nos comentários.'),
+        B('s1', 'Ideia: entrevista', 1120, 470, 3, 'Chamar um diretor de arte para mostrar um projeto dele que parece genérico e explicar o que faria diferente hoje. Pode entrar logo depois da virada.'),
+        B('s2', 'Dado para checar', 700, 420, 2, 'Procurar pesquisa sobre quantos sites novos usam construtores automáticos. Se achar um número confiável, entra no bloco sobre a média.'),
+      ],
+      ligacoes: [
+        { id: 'l1', de: 'g1', para: 'g2', tipo: 'seq' },
+        { id: 'l2', de: 'g2', para: 'g3', tipo: 'seq' },
+        { id: 'l3', de: 'g3', para: 'g4', tipo: 'seq' },
+        { id: 'l4', de: 'g4', para: 'g5', tipo: 'seq' },
+        { id: 'l5', de: 'g5', para: 'g6', tipo: 'seq' },
+        { id: 'l6', de: 'g6', para: 'g7', tipo: 'seq' },
+        { id: 'l7', de: 's2', para: 'g3', tipo: 'rel' },
+        { id: 'l8', de: 's1', para: 'g4', tipo: 'rel' },
+      ],
+    };
+  }
+
+  // ---------- estado ----------
+  let S;
+  try { S = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) { S = null; }
+  if (!S || !Array.isArray(S.blocos)) S = exemplo();
+  const V = { x: 0, y: 0, z: 1 };
+  let sel = null; // {tipo:'bloco'|'fio', id}
+  let modoRel = false;
+  let salvarT = 0;
+  const salvar = () => {
+    clearTimeout(salvarT);
+    salvarT = setTimeout(() => { try { localStorage.setItem(CHAVE, JSON.stringify(S)); } catch (e) {} }, 250);
+  };
+
+  const bloco = (id) => S.blocos.find((b) => b.id === id);
+  const palavras = (t) => (t.trim().match(/\S+/g) || []).length;
+  const dur = (b) => palavras(b.texto) / S.ritmo * 60;
+  const durLayout = (b) => Math.max(dur(b), 3);
+  const tc = (s) => { s = Math.round(s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  const cor = (n) => `var(--i${n})`;
+  const seqDe = (id) => S.ligacoes.find((l) => l.tipo === 'seq' && l.de === id);
+
+  let cicloEm = null;
+  function caminho() {
+    const out = [], visto = new Set();
+    let cur = S.inicio;
+    cicloEm = null;
+    while (cur && bloco(cur)) {
+      if (visto.has(cur)) { cicloEm = out[out.length - 1]; break; }
+      out.push(cur); visto.add(cur);
+      const l = seqDe(cur);
+      cur = l ? l.para : null;
+    }
+    return out;
+  }
+
+  // ---------- operações ----------
+  function novoBloco(x, y) {
+    const b = { id: uid(), titulo: '', texto: '', x: Math.round(x), y: Math.round(y), intensidade: 3 };
+    S.blocos.push(b);
+    if (!S.inicio || !bloco(S.inicio)) S.inicio = b.id;
+    return b;
+  }
+  function ligar(de, para, tipo) {
+    if (de === para) return;
+    if (tipo === 'seq') {
+      const noCaminho = caminho();
+      S.ligacoes = S.ligacoes.filter((l) => !(l.tipo === 'seq' && (l.de === de || l.para === para)));
+      S.ligacoes.push({ id: uid(), de, para, tipo });
+      if (para === S.inicio && !noCaminho.includes(de)) S.inicio = de;
+      if (!S.inicio) S.inicio = de;
+    } else {
+      if (S.ligacoes.some((l) => l.tipo === 'rel' && ((l.de === de && l.para === para) || (l.de === para && l.para === de)))) return;
+      S.ligacoes.push({ id: uid(), de, para, tipo });
+    }
+  }
+  function definirOrdem(ids) {
+    const P = new Set([...caminho(), ...ids]);
+    S.ligacoes = S.ligacoes.filter((l) => !(l.tipo === 'seq' && (P.has(l.de) || P.has(l.para))));
+    for (let i = 0; i < ids.length - 1; i++) S.ligacoes.push({ id: uid(), de: ids[i], para: ids[i + 1], tipo: 'seq' });
+    S.inicio = ids[0] || null;
+  }
+  function inserir(id, idx) {
+    const o = caminho().filter((x) => x !== id);
+    o.splice(Math.max(0, Math.min(idx, o.length)), 0, id);
+    definirOrdem(o);
+  }
+  function tirar(id) { definirOrdem(caminho().filter((x) => x !== id)); }
+  function apagarBloco(id) {
+    if (caminho().includes(id)) tirar(id);
+    S.ligacoes = S.ligacoes.filter((l) => l.de !== id && l.para !== id);
+    S.blocos = S.blocos.filter((b) => b.id !== id);
+    if (S.inicio === id) S.inicio = null;
+    if (!S.inicio && S.blocos.length && !caminho().length) {
+      // sem montagem: nada começa sozinho, o usuário escolhe pela timeline ou pelo ▶
+    }
+    const el = els.get(id); if (el) { el.remove(); els.delete(id); }
+    if (sel && sel.id === id) sel = null;
+  }
+
+  // ---------- canvas ----------
+  const canvas = $('canvas'), mundo = $('mundo'), fios = $('fios');
+  const els = new Map();
+  function aplicarVista(suave) {
+    mundo.classList.toggle('suave', !!suave);
+    mundo.style.transform = `translate(${V.x}px, ${V.y}px) scale(${V.z})`;
+    canvas.style.backgroundSize = `${24 * V.z}px ${24 * V.z}px`;
+    canvas.style.backgroundPosition = `${V.x}px ${V.y}px`;
+    $('z-valor').textContent = Math.round(V.z * 100) + '%';
+    if (suave) setTimeout(() => mundo.classList.remove('suave'), 380);
+  }
+  const paraMundo = (cx, cy) => {
+    const r = canvas.getBoundingClientRect();
+    return { x: (cx - r.left - V.x) / V.z, y: (cy - r.top - V.y) / V.z };
+  };
+  function zoomEm(f, cx, cy) {
+    const r = canvas.getBoundingClientRect();
+    const px = cx - r.left, py = cy - r.top;
+    const nz = Math.min(2, Math.max(0.3, V.z * f));
+    V.x = px - (px - V.x) * (nz / V.z); V.y = py - (py - V.y) * (nz / V.z); V.z = nz;
+    aplicarVista();
+  }
+  function enquadrar(suave) {
+    if (!S.blocos.length) { V.x = 40; V.y = 40; V.z = 1; aplicarVista(suave); return; }
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    S.blocos.forEach((b) => {
+      const h = els.get(b.id) ? els.get(b.id).offsetHeight : 200;
+      x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y); x1 = Math.max(x1, b.x + LARG); y1 = Math.max(y1, b.y + h);
+    });
+    const r = canvas.getBoundingClientRect(), pad = 48;
+    const z = Math.min(1, Math.max(0.3, Math.min((r.width - pad * 2) / (x1 - x0), (r.height - pad * 2) / (y1 - y0))));
+    V.z = z; V.x = (r.width - (x1 - x0) * z) / 2 - x0 * z; V.y = (r.height - (y1 - y0) * z) / 2 - y0 * z;
+    aplicarVista(suave);
+  }
+  function centrar(id) {
+    const b = bloco(id), el = els.get(id); if (!b) return;
+    const r = canvas.getBoundingClientRect();
+    V.x = r.width / 2 - (b.x + LARG / 2) * V.z;
+    V.y = r.height / 2 - (b.y + (el ? el.offsetHeight : 160) / 2) * V.z;
+    aplicarVista(true);
+  }
+
+  function criarEl(b) {
+    const el = document.createElement('div');
+    el.className = 'bloco'; el.dataset.id = b.id;
+    el.innerHTML = `
+      <div class="b-head">
+        <span class="b-ord"></span>
+        <input class="b-tit" placeholder="Título do bloco" aria-label="Título do bloco">
+        <button class="b-icon b-ini" title="Começar a montagem por este bloco" aria-label="Marcar como início">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7-4.5z" fill="currentColor"></path></svg>
+        </button>
+        <button class="b-icon b-del" title="Apagar bloco" aria-label="Apagar bloco">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.6"></path></svg>
+        </button>
+      </div>
+      <textarea class="b-txt" rows="2" placeholder="Escreva o trecho…" aria-label="Texto do bloco"></textarea>
+      <div class="b-foot">
+        <div style="display:flex;align-items:center">
+          <div class="medidor" role="group" aria-label="Intensidade">
+            ${[1, 2, 3, 4, 5].map((n) => `<button data-n="${n}" aria-label="Intensidade ${n}"></button>`).join('')}
+          </div>
+          <span class="medidor-rot"></span>
+        </div>
+        <span class="b-meta"></span>
+      </div>
+      <span class="porta in"></span>
+      <span class="porta out" title="Arraste até outro bloco para ligar"></span>`;
+    const tit = el.querySelector('.b-tit'), txt = el.querySelector('.b-txt');
+    tit.addEventListener('input', () => { bloco(b.id).titulo = tit.value; mudou({ canvas: false }); });
+    txt.addEventListener('input', () => { bloco(b.id).texto = txt.value; autoAltura(txt); mudou({ canvas: false }); desenharFios(); });
+    el.addEventListener('focusin', () => selecionar({ tipo: 'bloco', id: b.id }, false));
+    el.querySelector('.b-ini').addEventListener('click', () => { S.inicio = b.id; mudou(); });
+    el.querySelector('.b-del').addEventListener('click', () => { apagarBloco(b.id); mudou(); });
+    el.querySelectorAll('.medidor button').forEach((btn) => btn.addEventListener('click', () => {
+      bloco(b.id).intensidade = +btn.dataset.n; mudou();
+    }));
+    el.querySelector('.b-head').addEventListener('pointerdown', (e) => {
+      if (e.target.closest('input,button')) return;
+      iniciarArrasteBloco(e, b.id);
+    });
+    el.querySelector('.porta.out').addEventListener('pointerdown', (e) => iniciarLigacao(e, b.id));
+    mundo.appendChild(el);
+    els.set(b.id, el);
+    return el;
+  }
+  function autoAltura(t) { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 340) + 'px'; t.style.overflowY = t.scrollHeight > 340 ? 'auto' : 'hidden'; }
+
+  function desenharBlocos() {
+    const cam = caminho();
+    const idx = new Map(cam.map((id, i) => [id, i]));
+    S.blocos.forEach((b) => {
+      const el = els.get(b.id) || criarEl(b);
+      el.style.left = b.x + 'px'; el.style.top = b.y + 'px';
+      el.style.setProperty('--iN', cor(b.intensidade));
+      const solto = !idx.has(b.id);
+      el.classList.toggle('solto', solto);
+      el.classList.toggle('sel', !!sel && sel.tipo === 'bloco' && sel.id === b.id);
+      el.classList.toggle('ciclo', cicloEm === b.id);
+      el.querySelector('.b-ord').textContent = solto ? 'solto' : idx.get(b.id) + 1;
+      el.querySelector('.b-ini').setAttribute('aria-pressed', String(S.inicio === b.id));
+      const tit = el.querySelector('.b-tit'), txt = el.querySelector('.b-txt');
+      if (document.activeElement !== tit && tit.value !== b.titulo) tit.value = b.titulo;
+      if (document.activeElement !== txt && txt.value !== b.texto) { txt.value = b.texto; autoAltura(txt); }
+      el.querySelectorAll('.medidor button').forEach((btn) => {
+        const on = +btn.dataset.n <= b.intensidade;
+        btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', String(+btn.dataset.n === b.intensidade));
+      });
+      el.querySelector('.medidor-rot').textContent = NIVEL[b.intensidade];
+      atualizarMeta(b);
+      el.title = cicloEm === b.id ? 'Este bloco liga de volta a um bloco anterior; a montagem para aqui.' : '';
+    });
+    for (const [id, el] of els) if (!bloco(id)) { el.remove(); els.delete(id); }
+  }
+  function atualizarMeta(b) {
+    const el = els.get(b.id); if (!el) return;
+    const p = palavras(b.texto);
+    el.querySelector('.b-meta').textContent = `${p} palavra${p === 1 ? '' : 's'} · ${tc(dur(b))}`;
+  }
+
+  const curvaFio = (x1, y1, x2, y2) => {
+    const d = Math.max(40, Math.abs(x2 - x1) * 0.45);
+    return `M${x1},${y1} C${x1 + d},${y1} ${x2 - d},${y2} ${x2},${y2}`;
+  };
+  const NS = 'http://www.w3.org/2000/svg';
+  function desenharFios() {
+    let h = `<defs><marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--seq)"></path></marker>
+      <marker id="seta-sel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"></path></marker></defs>`;
+    S.ligacoes.forEach((l) => {
+      const a = bloco(l.de), b = bloco(l.para); if (!a || !b) return;
+      const d = curvaFio(a.x + LARG + 6, a.y + PORTA_Y, b.x - 8, b.y + PORTA_Y);
+      const s = sel && sel.tipo === 'fio' && sel.id === l.id;
+      h += `<path class="fio ${l.tipo}${s ? ' sel' : ''}" d="${d}" ${l.tipo === 'seq' ? `marker-end="url(#${s ? 'seta-sel' : 'seta'})"` : ''}></path>`;
+      h += `<path class="fio-hit" data-fio="${l.id}" d="${d}"><title>${l.tipo === 'seq' ? 'Sequência' : 'Relação'} · clique para selecionar</title></path>`;
+      if (s) {
+        const mx = (a.x + LARG + b.x) / 2, my = (a.y + b.y) / 2 + PORTA_Y;
+        h += `<g class="fio-x" data-apagar="${l.id}" transform="translate(${mx},${my})"><title>Apagar ligação</title><circle r="10"></circle><path d="M-3.5,-3.5 L3.5,3.5 M3.5,-3.5 L-3.5,3.5"></path></g>`;
+      }
+    });
+    h += `<path class="fio-tmp" id="fio-tmp" d="" style="display:none"></path>`;
+    fios.innerHTML = h;
+  }
+  fios.addEventListener('pointerdown', (e) => {
+    const x = e.target.closest('[data-apagar]');
+    if (x) { e.stopPropagation(); S.ligacoes = S.ligacoes.filter((l) => l.id !== x.dataset.apagar); sel = null; mudou(); return; }
+    const f = e.target.closest('[data-fio]');
+    if (f) { e.stopPropagation(); selecionar({ tipo: 'fio', id: f.dataset.fio }); }
+  });
+
+  // arrastes no canvas
+  function iniciarArrasteBloco(e, id) {
+    e.preventDefault();
+    selecionar({ tipo: 'bloco', id });
+    const b = bloco(id), el = els.get(id);
+    const ini = paraMundo(e.clientX, e.clientY), ox = b.x, oy = b.y;
+    el.style.zIndex = 5;
+    const mv = (ev) => {
+      const p = paraMundo(ev.clientX, ev.clientY);
+      b.x = Math.round(ox + p.x - ini.x); b.y = Math.round(oy + p.y - ini.y);
+      el.style.left = b.x + 'px'; el.style.top = b.y + 'px';
+      desenharFios();
+    };
+    const up = () => { el.style.zIndex = ''; window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); salvar(); };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  }
+  function iniciarLigacao(e, de) {
+    e.preventDefault(); e.stopPropagation();
+    const a = bloco(de), porta = e.currentTarget;
+    porta.classList.add('ativa');
+    const tmp = $('fio-tmp');
+    let alvo = null;
+    const mv = (ev) => {
+      const p = paraMundo(ev.clientX, ev.clientY);
+      const rel = modoRel || ev.shiftKey;
+      tmp.style.display = '';
+      tmp.setAttribute('d', curvaFio(a.x + LARG + 6, a.y + PORTA_Y, p.x, p.y));
+      tmp.style.strokeDasharray = rel ? '5 6' : '4 4';
+      const hit = document.elementFromPoint(ev.clientX, ev.clientY);
+      const bl = hit && hit.closest('.bloco');
+      const novo = bl && bl.dataset.id !== de ? bl : null;
+      if (alvo !== novo) { if (alvo) alvo.classList.remove('alvo'); alvo = novo; if (alvo) alvo.classList.add('alvo'); }
+    };
+    const up = (ev) => {
+      window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+      porta.classList.remove('ativa');
+      if (alvo) { alvo.classList.remove('alvo'); ligar(de, alvo.dataset.id, (modoRel || ev.shiftKey) ? 'rel' : 'seq'); mudou(); }
+      else desenharFios();
+    };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  }
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.bloco, .zoom, [data-fio], [data-apagar]')) return;
+    if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.bloco')) document.activeElement.blur();
+    selecionar(null);
+    const sx = e.clientX, sy = e.clientY, ox = V.x, oy = V.y;
+    canvas.classList.add('movendo');
+    const mv = (ev) => { V.x = ox + ev.clientX - sx; V.y = oy + ev.clientY - sy; aplicarVista(); };
+    const up = () => { canvas.classList.remove('movendo'); window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  });
+  canvas.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.bloco, .zoom')) return;
+    const p = paraMundo(e.clientX, e.clientY);
+    const b = novoBloco(p.x - LARG / 2, p.y - 20);
+    sel = { tipo: 'bloco', id: b.id };
+    mudou();
+    els.get(b.id).querySelector('.b-tit').focus();
+  });
+  canvas.addEventListener('wheel', (e) => {
+    const ta = e.target.closest && e.target.closest('.b-txt');
+    if (ta && !e.ctrlKey && ta.scrollHeight > ta.clientHeight) return;
+    e.preventDefault();
+    if (e.ctrlKey || e.metaKey) zoomEm(Math.exp(-e.deltaY * 0.0022), e.clientX, e.clientY);
+    else { V.x -= e.deltaX; V.y -= e.deltaY; aplicarVista(); }
+  }, { passive: false });
+  $('z-mais').onclick = () => { const r = canvas.getBoundingClientRect(); zoomEm(1.2, r.left + r.width / 2, r.top + r.height / 2); };
+  $('z-menos').onclick = () => { const r = canvas.getBoundingClientRect(); zoomEm(1 / 1.2, r.left + r.width / 2, r.top + r.height / 2); };
+  $('z-valor').onclick = () => { const r = canvas.getBoundingClientRect(); zoomEm(1 / V.z, r.left + r.width / 2, r.top + r.height / 2); };
+  $('z-fit').onclick = () => enquadrar(true);
+
+  // ---------- timeline ----------
+  const tlScroll = $('tl-scroll'), tlInner = $('tl-inner'), regua = $('regua'), curva = $('curva'), faixa = $('faixa');
+  const CH = 104, CPAD = 14;
+  const yNivel = (n) => CPAD + (5 - n) / 4 * (CH - CPAD * 2);
+  const nivelY = (y) => Math.max(1, Math.min(5, Math.round(5 - (y - CPAD) / (CH - CPAD * 2) * 4)));
+  let L = { clipes: [], largura: 0, pxs: 1 }; // layout atual
+
+  function layoutTimeline() {
+    const cam = caminho();
+    const totalL = cam.reduce((s, id) => s + durLayout(bloco(id)), 0);
+    const util = Math.max(200, tlScroll.clientWidth - 24);
+    const pxs = totalL ? Math.min(14, Math.max(3.5, util / totalL)) : 4;
+    let x = 0, t = 0;
+    const clipes = cam.map((id) => {
+      const b = bloco(id), w = durLayout(b) * pxs;
+      const c = { id, x, w, t, d: dur(b) };
+      x += w; t += dur(b);
+      return c;
+    });
+    return { clipes, largura: x, pxs, total: t };
+  }
+  function planejadoEm(frac) {
+    if (!S.planejada) return null;
+    const v = S.planejada[Math.round(frac * (N_PLAN - 1))];
+    return v == null ? null : v;
+  }
+  function suave(pts) {
+    if (!pts.length) return '';
+    const cl = (v) => Math.max(CPAD - 4, Math.min(CH - CPAD + 4, v));
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      d += ` C${p1[0] + (p2[0] - p0[0]) / 6},${cl(p1[1] + (p2[1] - p0[1]) / 6)} ${p2[0] - (p3[0] - p1[0]) / 6},${cl(p2[1] - (p3[1] - p1[1]) / 6)} ${p2[0]},${p2[1]}`;
+    }
+    return d;
+  }
+
+  function desenharTimeline() {
+    L = layoutTimeline();
+    const W = Math.max(L.largura, tlScroll.clientWidth - 24);
+    tlInner.style.width = (W + 24) + 'px';
+    // régua
+    const passos = [5, 10, 15, 30, 60, 120, 300];
+    const passo = passos.find((p) => p * L.pxs >= 64) || 600;
+    let rh = '';
+    const fimT = W / L.pxs;
+    // a régua segue o tempo real dentro de cada clipe
+    for (let s = 0; s <= fimT + 0.01; s += passo) if (xDoTempo(s) <= W - 44) rh += `<span style="left:${xDoTempo(s)}px">${tc(s)}</span>`;
+    regua.innerHTML = rh;
+    // curva
+    curva.setAttribute('width', W); curva.setAttribute('viewBox', `0 0 ${W} ${CH}`);
+    curva.classList.toggle('desenho', !!S.mostrarPlanejada);
+    let h = '<defs><linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" style="stop-color:var(--i5);stop-opacity:.22"></stop>' +
+      '<stop offset=".55" style="stop-color:var(--i3);stop-opacity:.12"></stop>' +
+      '<stop offset="1" style="stop-color:var(--i1);stop-opacity:.05"></stop></linearGradient></defs>';
+    [1, 3, 5].forEach((n) => { h += `<line class="guia" x1="0" x2="${W}" y1="${yNivel(n)}" y2="${yNivel(n)}"></line>`; });
+    h += `<text class="guia-rot" x="${W - 4}" y="${yNivel(5) - 4}" text-anchor="end">pico</text><text class="guia-rot" x="${W - 4}" y="${yNivel(1) + 11}" text-anchor="end">calmo</text>`;
+    // curva planejada
+    if (S.mostrarPlanejada && S.planejada && L.largura) {
+      let seg = [];
+      const runs = [];
+      S.planejada.forEach((v, i) => {
+        if (v == null) { if (seg.length) runs.push(seg); seg = []; return; }
+        seg.push([i / (N_PLAN - 1) * L.largura, yNivel(v)]);
+      });
+      if (seg.length) runs.push(seg);
+      runs.forEach((r) => { h += `<path class="plan" d="${r.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"></path>`; });
+    }
+    if (L.clipes.length) {
+      const pts = L.clipes.map((c) => [c.x + c.w / 2, yNivel(bloco(c.id).intensidade)]);
+      const todos = [[0, pts[0][1]], ...pts, [L.largura, pts[pts.length - 1][1]]];
+      const d = suave(todos);
+      h += `<path d="${d} L${L.largura},${CH} L0,${CH} Z" style="fill:url(#gArea)"></path>`;
+      h += `<path class="real" d="${d}"></path>`;
+      L.clipes.forEach((c, i) => {
+        const b = bloco(c.id), x = pts[i][0], y = pts[i][1];
+        if (S.mostrarPlanejada && L.largura) {
+          const p = planejadoEm(x / L.largura);
+          if (p != null && Math.abs(p - b.intensidade) > 1) h += `<line class="desvio" x1="${x}" x2="${x}" y1="${y}" y2="${yNivel(p)}"></line>`;
+        }
+        const s = sel && sel.tipo === 'bloco' && sel.id === c.id;
+        h += `<g class="ponto${s ? ' sel' : ''}" data-ponto="${c.id}"><title>${esc(b.titulo || 'Sem título')} · intensidade ${b.intensidade} (${NIVEL[b.intensidade]}). Arraste para cima ou para baixo.</title>` +
+          `<circle cx="${x}" cy="${y}" r="15" style="fill:transparent"></circle>` +
+          `<circle class="vis" cx="${x}" cy="${y}" r="5.5" style="stroke:${cor(b.intensidade)}"></circle></g>`;
+      });
+    }
+    curva.innerHTML = h;
+    // clipes
+    let fh = '';
+    if (!L.clipes.length) {
+      fh = `<div class="vazio-tl">A montagem está vazia. Arraste um bloco da gaveta para cá, ou ligue blocos no canvas.</div>`;
+    }
+    L.clipes.forEach((c, i) => {
+      const b = bloco(c.id);
+      const s = sel && sel.tipo === 'bloco' && sel.id === c.id;
+      let fora = false, dica = '';
+      if (S.mostrarPlanejada && L.largura) {
+        const p = planejadoEm((c.x + c.w / 2) / L.largura);
+        if (p != null && Math.abs(p - b.intensidade) > 1) { fora = true; dica = ` · planejado ${NIVEL[Math.round(p)]}, texto está ${NIVEL[b.intensidade]}`; }
+      }
+      fh += `<div class="clipe${s ? ' sel' : ''}${c.d === 0 ? ' vazio' : ''}${fora ? ' fora' : ''}" data-clipe="${c.id}" tabindex="0"
+        style="left:${c.x + 1}px;width:${Math.max(c.w - 2, 8)}px;--iN:${cor(b.intensidade)}" title="${esc(b.titulo || 'Sem título')} · começa em ${tc(c.t)} · ${tc(c.d)}${dica}">
+        <div class="clipe-t"><small>${i + 1}</small>${esc(b.titulo || 'Sem título')}</div>
+        <div class="clipe-d">${tc(c.t)} · ${tc(c.d)}</div>
+        <button class="clipe-x" data-tirar="${c.id}" aria-label="Tirar da montagem" title="Tirar da montagem (vai para a gaveta)">×</button>
+      </div>`;
+    });
+    faixa.innerHTML = fh;
+    $('plan-apagar').hidden = !(S.mostrarPlanejada && S.planejada);
+  }
+  // converte tempo real em x, respeitando a largura mínima dos clipes curtos
+  function xDoTempo(s) {
+    for (const c of L.clipes) {
+      if (s <= c.t + c.d || c === L.clipes[L.clipes.length - 1]) {
+        const dentro = Math.max(0, s - c.t);
+        if (s <= c.t + c.d) return c.x + (c.d ? dentro / c.d * c.w : 0);
+        return c.x + c.w + (s - c.t - c.d) * L.pxs;
+      }
+    }
+    return s * L.pxs;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m])); }
+
+  function desenharGaveta() {
+    const cam = new Set(caminho());
+    const soltos = S.blocos.filter((b) => !cam.has(b.id));
+    $('gaveta-n').textContent = soltos.length ? `${soltos.length} fora da montagem` : '';
+    $('gaveta-lista').innerHTML = soltos.length ? soltos.map((b) =>
+      `<li class="chip" data-chip="${b.id}" style="--iN:${cor(b.intensidade)}" title="Arraste para a timeline">
+        <span class="dotI"></span><span class="t">${esc(b.titulo || 'Sem título')}</span>
+        <button class="add" data-add="${b.id}" title="Pôr no fim da montagem">+ fim</button></li>`).join('')
+      : `<li class="nada">Todos os blocos estão na montagem. Blocos sem sequência aparecem aqui.</li>`;
+  }
+
+  // posição de inserção na faixa (em índice do caminho sem o arrastado)
+  function indiceEm(clientX, sem) {
+    const r = tlInner.getBoundingClientRect();
+    const x = clientX - r.left - 12;
+    const lista = L.clipes.filter((c) => c.id !== sem);
+    let i = 0;
+    for (const c of lista) { if (c.x + c.w / 2 < x) i++; }
+    return i;
+  }
+  function xDoIndice(i, sem) {
+    const lista = L.clipes.filter((c) => c.id !== sem);
+    if (!lista.length) return 0;
+    if (i >= lista.length) { const u = lista[lista.length - 1]; return u.x + u.w; }
+    return lista[i].x;
+  }
+  function sobre(el, e) { const r = el.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; }
+
+  function arrastarParaTimeline(e, id, origem) {
+    const sx = e.clientX, sy = e.clientY;
+    let ativo = false, ghost = null, marc = null, alvo = null;
+    const gav = $('gaveta'), tl = $('tl-scroll');
+    const mv = (ev) => {
+      if (!ativo) {
+        if (Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        ativo = true;
+        ghost = document.createElement('div'); ghost.className = 'arrastado';
+        ghost.textContent = bloco(id).titulo || 'Sem título';
+        document.body.appendChild(ghost);
+        const c = faixa.querySelector(`[data-clipe="${id}"]`); if (c) c.classList.add('fantasma');
+      }
+      ghost.style.left = ev.clientX + 'px'; ghost.style.top = ev.clientY + 'px';
+      if (sobre(tl, ev)) {
+        alvo = { tipo: 'tl', i: indiceEm(ev.clientX, id) };
+        if (!marc) { marc = document.createElement('div'); marc.className = 'marcador'; faixa.appendChild(marc); }
+        marc.style.left = (xDoIndice(alvo.i, id) - 1) + 'px';
+        gav.classList.remove('alvo');
+      } else if (origem === 'clipe' && sobre(gav, ev)) {
+        alvo = { tipo: 'gaveta' }; gav.classList.add('alvo');
+        if (marc) { marc.remove(); marc = null; }
+      } else {
+        alvo = null; gav.classList.remove('alvo');
+        if (marc) { marc.remove(); marc = null; }
+      }
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up);
+      gav.classList.remove('alvo');
+      if (ghost) ghost.remove(); if (marc) marc.remove();
+      if (!ativo) { if (origem === 'clipe') { selecionar({ tipo: 'bloco', id }); centrar(id); } return; }
+      if (alvo && alvo.tipo === 'tl') inserir(id, alvo.i);
+      else if (alvo && alvo.tipo === 'gaveta') tirar(id);
+      mudou();
+    };
+    window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+  }
+  faixa.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('[data-tirar]')) return;
+    const c = e.target.closest('[data-clipe]'); if (!c) return;
+    e.preventDefault();
+    arrastarParaTimeline(e, c.dataset.clipe, 'clipe');
+  });
+  faixa.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-tirar]');
+    if (t) { tirar(t.dataset.tirar); mudou(); }
+  });
+  faixa.addEventListener('keydown', (e) => {
+    const c = e.target.closest('[data-clipe]'); if (!c) return;
+    const id = c.dataset.clipe, cam = caminho(), i = cam.indexOf(id);
+    if (e.key === 'Enter') { selecionar({ tipo: 'bloco', id }); centrar(id); }
+    else if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      e.preventDefault(); inserir(id, i + (e.key === 'ArrowLeft' ? -1 : 1)); mudou();
+      const n = faixa.querySelector(`[data-clipe="${id}"]`); if (n) n.focus();
+    }
+  });
+  $('gaveta-lista').addEventListener('pointerdown', (e) => {
+    if (e.target.closest('[data-add]')) return;
+    const c = e.target.closest('[data-chip]'); if (!c) return;
+    e.preventDefault();
+    arrastarParaTimeline(e, c.dataset.chip, 'chip');
+  });
+  $('gaveta-lista').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-add]');
+    if (a) { inserir(a.dataset.add, Infinity); mudou(); return; }
+    const c = e.target.closest('[data-chip]');
+    if (c) { selecionar({ tipo: 'bloco', id: c.dataset.chip }); centrar(c.dataset.chip); }
+  });
+
+  // curva: arrastar pontos e desenhar a planejada
+  curva.addEventListener('pointerdown', (e) => {
+    const p = e.target.closest('[data-ponto]');
+    const r = curva.getBoundingClientRect();
+    if (p) {
+      e.preventDefault();
+      const id = p.dataset.ponto;
+      selecionar({ tipo: 'bloco', id });
+      const mv = (ev) => {
+        const n = nivelY(ev.clientY - r.top);
+        if (bloco(id).intensidade !== n) { bloco(id).intensidade = n; mudou(); }
+      };
+      const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+      window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up);
+      return;
+    }
+    if (!S.mostrarPlanejada || !L.largura) return;
+    e.preventDefault();
+    if (!S.planejada) S.planejada = new Array(N_PLAN).fill(null);
+    let ult = null;
+    const marcar = (ev) => {
+      const x = Math.max(0, Math.min(L.largura, ev.clientX - r.left));
+      const y = Math.max(CPAD, Math.min(CH - CPAD, ev.clientY - r.top));
+      const i = Math.round(x / L.largura * (N_PLAN - 1));
+      const v = 5 - (y - CPAD) / (CH - CPAD * 2) * 4;
+      if (ult) {
+        const [i0, v0] = ult, passo = i > i0 ? 1 : -1;
+        for (let k = i0; k !== i; k += passo) S.planejada[k] = v0 + (v - v0) * ((k - i0) / (i - i0));
+      }
+      S.planejada[i] = v; ult = [i, v];
+      desenharTimeline();
+    };
+    marcar(e);
+    const up = () => { window.removeEventListener('pointermove', marcar); window.removeEventListener('pointerup', up); salvar(); };
+    window.addEventListener('pointermove', marcar); window.addEventListener('pointerup', up);
+  });
+  $('plan-on').addEventListener('change', (e) => { S.mostrarPlanejada = e.target.checked; mudou({ canvas: false }); });
+  $('plan-apagar').onclick = () => { S.planejada = null; mudou({ canvas: false }); };
+
+  // ---------- seleção e sincronização ----------
+  function selecionar(s, redesenhar = true) {
+    const antes = sel ? sel.tipo + sel.id : '', depois = s ? s.tipo + s.id : '';
+    sel = s;
+    if (antes !== depois && redesenhar !== false) { desenharBlocos(); desenharFios(); desenharTimeline(); }
+    else if (antes !== depois) {
+      els.forEach((el, id) => el.classList.toggle('sel', !!sel && sel.tipo === 'bloco' && sel.id === id));
+      faixa.querySelectorAll('[data-clipe]').forEach((c) => c.classList.toggle('sel', !!sel && sel.tipo === 'bloco' && sel.id === c.dataset.clipe));
+      desenharFios();
+    }
+  }
+  function desenharResumo() {
+    const cam = caminho();
+    const total = cam.reduce((s, id) => s + dur(bloco(id)), 0);
+    const soltos = S.blocos.length - cam.length;
+    $('resumo').innerHTML = `<b>${cam.length}</b> na montagem · <b>${tc(total)}</b>${soltos ? ` · ${soltos} solto${soltos > 1 ? 's' : ''}` : ''}`;
+  }
+  function mudou(o = {}) {
+    if (o.canvas !== false) { desenharBlocos(); desenharFios(); }
+    else { S.blocos.forEach(atualizarMeta); }
+    desenharTimeline(); desenharGaveta(); desenharResumo();
+    if (!$('veu').hidden) desenharRender();
+    salvar();
+  }
+
+  // ---------- barra ----------
+  const titulo = $('titulo');
+  titulo.addEventListener('input', () => { S.titulo = titulo.value; salvar(); });
+  $('ritmo').addEventListener('change', (e) => { S.ritmo = +e.target.value; mudou(); });
+  const setModo = (rel) => { modoRel = rel; $('modo-seq').setAttribute('aria-pressed', String(!rel)); $('modo-rel').setAttribute('aria-pressed', String(rel)); };
+  $('modo-seq').onclick = () => setModo(false);
+  $('modo-rel').onclick = () => setModo(true);
+  $('novo').onclick = () => {
+    const r = canvas.getBoundingClientRect();
+    const p = paraMundo(r.left + r.width / 2, r.top + r.height / 2);
+    const b = novoBloco(p.x - LARG / 2 + (Math.random() * 60 - 30), p.y - 60 + (Math.random() * 60 - 30));
+    sel = { tipo: 'bloco', id: b.id }; mudou();
+    els.get(b.id).querySelector('.b-tit').focus();
+  };
+  function doisCliques(btn, rotulo, acao) {
+    let armado = 0;
+    btn.onclick = () => {
+      if (armado) { clearTimeout(armado); armado = 0; btn.textContent = rotulo; acao(); return; }
+      btn.textContent = 'Clique de novo';
+      armado = setTimeout(() => { armado = 0; btn.textContent = rotulo; }, 2600);
+    };
+  }
+  function carregar(novo) {
+    S = novo; sel = null;
+    els.forEach((el) => el.remove()); els.clear();
+    sincronizarBarra(); mudou();
+    requestAnimationFrame(() => enquadrar(true));
+  }
+  doisCliques($('exemplo'), 'Exemplo', () => carregar(exemplo()));
+  doisCliques($('limpar'), 'Limpar', () => carregar({ titulo: '', ritmo: S.ritmo, inicio: null, planejada: null, mostrarPlanejada: false, blocos: [], ligacoes: [] }));
+  function sincronizarBarra() {
+    titulo.value = S.titulo || '';
+    $('ritmo').value = String(S.ritmo);
+    $('plan-on').checked = !!S.mostrarPlanejada;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const ed = e.target.closest && e.target.closest('input, textarea, select');
+    if (e.key === 'Escape') {
+      if (!$('veu').hidden) { fecharRender(); return; }
+      if (ed) e.target.blur(); selecionar(null); return;
+    }
+    if (ed || !sel) return;
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      e.preventDefault();
+      if (sel.tipo === 'bloco') apagarBloco(sel.id);
+      else S.ligacoes = S.ligacoes.filter((l) => l.id !== sel.id);
+      sel = null; mudou();
+    }
+  });
+
+  // ---------- renderizar ----------
+  const opc = () => ({
+    fmt: document.querySelector('input[name="fmt"]:checked').value,
+    titulos: $('op-titulos').checked, intensidade: $('op-int').checked,
+    sep: document.querySelector('input[name="sep"]:checked').value,
+  });
+  function compilar(o) {
+    const cam = caminho();
+    const total = cam.reduce((s, id) => s + dur(bloco(id)), 0);
+    const tituloR = S.titulo || 'Roteiro sem título';
+    const sep = o.sep === 'ast' ? '\n\n* * *\n\n' : '\n\n';
+    let t = 0;
+    const partes = cam.map((id, i) => {
+      const b = bloco(id), ini = t; t += dur(b);
+      const nome = b.titulo || `Bloco ${i + 1}`;
+      const nota = `intensidade ${b.intensidade}/5, ${NIVEL[b.intensidade]}`;
+      const texto = b.texto.trim();
+      if (o.fmt === 'md') {
+        let s = '';
+        if (o.titulos) s += `## ${nome}\n\n`;
+        if (o.intensidade) s += `_${tc(ini)} · ${nota}_\n\n`;
+        return s + texto;
+      }
+      if (o.fmt === 'tempos') {
+        let s = `[${tc(ini)}]`;
+        if (o.titulos) s += ` ${nome.toUpperCase()}`;
+        if (o.intensidade) s += ` (${nota})`;
+        return s + '\n' + texto;
+      }
+      let s = '';
+      if (o.titulos) s += nome + (o.intensidade ? ` (${nota})` : '') + '\n';
+      else if (o.intensidade) s += `(${nota})\n`;
+      return s + texto;
+    });
+    let cab = '';
+    if (o.fmt === 'md') cab = `# ${tituloR}\n\n_${cam.length} blocos · ${tc(total)}_\n\n`;
+    else if (o.fmt === 'tempos') cab = `${tituloR.toUpperCase()}\nDuração estimada: ${tc(total)} a ${S.ritmo} palavras/min\n\n`;
+    else if (o.titulos) cab = `${tituloR}\n\n`;
+    return cab + partes.join(o.fmt === 'md' && o.sep === 'ast' ? '\n\n---\n\n' : sep) + '\n';
+  }
+  function desenharRender() {
+    const o = opc();
+    const cam = caminho(), camS = new Set(cam);
+    const total = cam.reduce((s, id) => s + dur(bloco(id)), 0);
+    const pal = cam.reduce((s, id) => s + palavras(bloco(id).texto), 0);
+    const soltos = S.blocos.filter((b) => !camS.has(b.id));
+    const vazios = cam.map(bloco).filter((b) => !b.texto.trim());
+    $('relatorio').innerHTML = `<dt>Blocos</dt><dd>${cam.length}</dd><dt>Palavras</dt><dd>${pal}</dd><dt>Duração</dt><dd>${tc(total)}</dd><dt>Ritmo</dt><dd>${S.ritmo}/min</dd>`;
+    const av = [];
+    if (soltos.length) av.push(`${soltos.length} bloco${soltos.length > 1 ? 's' : ''} fora da montagem não entra${soltos.length > 1 ? 'm' : ''}: ${soltos.map((b) => esc(b.titulo || 'Sem título')).join(', ')}.`);
+    if (vazios.length) av.push(`${vazios.length} bloco${vazios.length > 1 ? 's' : ''} sem texto: ${vazios.map((b) => esc(b.titulo || 'Sem título')).join(', ')}.`);
+    if (cicloEm) av.push('A sequência volta para um bloco anterior. A montagem para no bloco marcado em laranja.');
+    $('avisos').innerHTML = av.map((a) => `<li>${a}</li>`).join('');
+    const pre = $('previa');
+    pre.textContent = cam.length ? compilar(o) : 'Nada para renderizar ainda. Ligue blocos no canvas ou arraste da gaveta para a timeline.';
+    pre.classList.toggle('mono', o.fmt !== 'corrido');
+  }
+  let focoAntes = null;
+  $('abrir-render').onclick = () => { focoAntes = document.activeElement; $('veu').hidden = false; $('r-status').textContent = ''; desenharRender(); $('copiar').focus(); };
+  function fecharRender() { $('veu').hidden = true; if (focoAntes && focoAntes.focus) focoAntes.focus(); }
+  $('fechar-render').onclick = fecharRender;
+  $('veu').addEventListener('pointerdown', (e) => { if (e.target === $('veu')) fecharRender(); });
+  document.querySelectorAll('.opcoes input').forEach((i) => i.addEventListener('change', desenharRender));
+  $('copiar').onclick = () => {
+    const txt = $('previa').textContent;
+    const selecionarTudo = () => { const r = document.createRange(); r.selectNodeContents($('previa')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try {
+      navigator.clipboard.writeText(txt).then(
+        () => { $('r-status').textContent = 'Copiado. Cole onde quiser.'; },
+        () => { selecionarTudo(); $('r-status').textContent = 'Não deu para copiar direto. O texto está selecionado: use Ctrl+C.'; });
+    } catch (e) { selecionarTudo(); $('r-status').textContent = 'Não deu para copiar direto. O texto está selecionado: use Ctrl+C.'; }
+  };
+
+  // ---------- início ----------
+  sincronizarBarra();
+  mudou();
+  requestAnimationFrame(() => enquadrar(false));
+  let rz = 0;
+  window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(desenharTimeline, 80); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { S.blocos.forEach((b) => { const el = els.get(b.id); if (el) autoAltura(el.querySelector('.b-txt')); }); desenharFios(); });
+})();
+</script>
