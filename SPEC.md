@@ -1,113 +1,93 @@
-# Montagem — especificação v0
+# Montagem — especificação v1
 
-> Nome provisório. Editor de roteiros e textos em canvas livre, com timeline sincronizada e curva de intensidade.
-> Ideia do Victor, 2026-09-29. Protótipo: `prototipo/index.html`.
+> Nome provisório. Ferramenta para transformar pensamento não linear em narrativa estruturada, sem tirar do autor o controle da escrita.
+> Fonte da intenção: `docs/brief.md` (palavras do Victor). Base de pesquisa da biblioteca: `docs/pesquisa-biblioteca.md`.
 
-## 1. A ideia em uma frase
+## 1. Regra do produto
 
-Um roteiro só, visto de dois jeitos: o **canvas**, onde você pensa, escreve e liga blocos; e a **timeline**, onde você vê a ordem, quanto tempo cada parte ocupa e a curva de energia. No fim, **Renderizar** junta tudo num texto corrido.
+**Baixa fricção para pensar, alta clareza para estruturar.** Não é um Figma com caixas de texto, nem um Miro com timeline, nem um editor com canvas por cima.
 
-## 2. Para quem e para quê
+Para quem: alguém que começa com ideias soltas (trechos, frases, argumentos, referências, caminhos possíveis) e precisa chegar a um texto linear coerente sem decidir a ordem cedo demais.
 
-- Quem escreve roteiro de vídeo, aula, palestra, podcast, apresentação ou texto longo e pensa **no tempo**: onde um assunto entra, quanto dura e como passa para o próximo.
-- O problema: editor de texto obriga a pensar de cima para baixo. Ferramentas de canvas (Milanote, Heptabase, Kinopio) deixam pensar no espaço, mas não dão tempo, ritmo nem um texto final.
-- O que ninguém junta (a checar melhor): canvas livre + timeline com duração + curva de intensidade + exportação linear.
+## 2. Modelo: Intenção → Estrutura → Realização, em toda escala
 
-## 3. Conceitos
+Tudo é um nó. Existem dois tipos:
 
-| Conceito | O que é |
+| Nó | O que é | Tem |
+|---|---|---|
+| **Parte** (e a raiz, que é a peça inteira) | Um recipiente narrativo | título, **intenção** ("o que precisa provocar"), **estrutura** (da biblioteca), **fio** (ordem de leitura dos filhos), **curva-alvo** opcional |
+| **Ideia** | A realização: texto concreto | texto, intensidade (1 vale a 5 pico), função no ritmo |
+
+Partes contêm ideias e outras partes. Isso dá o **zoom narrativo**: a peça tem intenção e estrutura; cada parte também; e assim por diante.
+
+Cadeia completa (do brief): Intenção macro → Estrutura macro → Vales → Blocos → Intenções micro → Estruturas micro → Texto.
+
+## 3. Ligações com sentido narrativo
+
+Ao ligar dois nós, a pessoa escolhe o significado em linguagem de texto, não de grafo:
+
+| Frase | Efeito |
 |---|---|
-| **Bloco** | Um trecho do roteiro. Tem título, texto, intensidade e posição no canvas. |
-| **Ligação de sequência** | Seta sólida. Diz "depois deste vem aquele". Forma a montagem. |
-| **Ligação de relação** | Linha tracejada. Diz "isso tem a ver com aquilo". Não entra na montagem. |
-| **Caminho principal** | A corrente de ligações de sequência que começa no bloco marcado como **Início**. É a montagem. |
-| **Blocos soltos** | Blocos fora do caminho principal. Ficam no canvas e na "gaveta" da timeline, como o *bin* de um editor de vídeo. |
-| **Intensidade** | Nível de energia do bloco, de 1 (calmo, explicativo) a 5 (pico, tensão, surpresa). |
-| **Curva real** | A linha que passa pela intensidade de cada bloco ao longo do tempo. Os "vales de interação". |
-| **Curva planejada** | Opcional. Uma curva desenhada à mão antes de escrever, que serve de alvo. |
+| **vem depois** | Entra no fio (a ordem de leitura). Só entre nós do mesmo recipiente; entre partes, a ordem vem da ordem das partes. |
+| **explica** | Linha tracejada com o rótulo "explica". Não muda a ordem. |
+| **podem virar uma só** | Linha pontilhada com o botão "Juntar em uma": une os textos (dá para desfazer). |
+| **pertence a esta parte** | Move o nó para dentro da parte (também dá para arrastar para dentro). |
 
-## 4. Regras (o coração do produto)
+Soltar a ligação no vazio cria a próxima ideia ali, já no fio.
 
-### 4.1 Caminho principal x ligações soltas
-- Cada bloco tem **no máximo uma** saída de sequência e **uma** entrada de sequência.
-- Ligar a saída de um bloco que já tem sequência **substitui** a ligação antiga (a antiga some; os blocos seguintes viram soltos se ficarem sem caminho).
-- Ligações de relação são livres: qualquer número, qualquer direção.
-- Só um bloco é o **Início**. Se não houver um marcado, o primeiro criado assume.
-- Ciclos: se a sequência voltar a um bloco já visitado, o caminho para ali e o bloco que fecha o ciclo ganha um aviso.
+## 4. O fio (a montagem)
 
-### 4.2 Duração sai do texto
-- Duração = palavras ÷ ritmo. Ritmo padrão: **150 palavras/min** (fala). Opções: 130 (fala lenta), 150, 180 (fala rápida), 230 (leitura silenciosa).
-- Futuro: duração manual por bloco (ex.: um bloco de "respiro" ou de imagem sem fala) e marcações de pausa.
+- Cada recipiente tem uma sequência ordenada: o fio daquele nível. A ordem final de leitura percorre os fios em profundidade.
+- Ideia solta na mesa (raiz) fica fora do fio até alguém ligá-la. Dentro de uma parte, o que entra passa a fazer parte do fio dela.
+- No canvas, o fio é a linha azul: mais grossa entre partes, mais fina dentro delas. A numeração hierárquica (3.2.1) diz a posição exata na montagem.
+- Cortar o fio num ponto tira a ideia seguinte da montagem; ela continua na mesa.
 
-### 4.3 Canvas → timeline
-- A timeline mostra só o caminho principal, na ordem da corrente.
-- Largura do clipe = duração. Altura do ponto na curva = intensidade.
-- Editar texto no canvas muda a largura do clipe na hora.
+## 5. Timeline e vales de interação
 
-### 4.4 Timeline → canvas
-- **Arrastar um clipe** para outra posição reescreve as ligações de sequência. A posição dos blocos no canvas **não muda**: o espaço é do pensamento, a ordem é da timeline.
-- **Arrastar um ponto da curva** para cima ou para baixo muda a intensidade do bloco.
-- **Arrastar um bloco da gaveta** para a timeline insere ele na sequência naquele ponto.
-- **Tirar um clipe** da timeline (botão ou arrastar para a gaveta) desfaz a sequência dele e emenda o anterior com o seguinte.
-- Clicar num clipe seleciona o bloco e centraliza ele no canvas.
-- Futuro: botão **Organizar** que alinha o caminho principal na horizontal no canvas, se o Victor quiser.
+- Mostra o nível em foco (a peça inteira ou a parte em que você entrou).
+- **Trechos:** cada item do fio com largura proporcional à duração. Parte mostra uma faixa com as intensidades de dentro.
+- **Duração:** sai do texto (palavras ÷ ritmo). Ritmos: 120, 150, 180 e 230 palavras/min.
+- **Curva:** passa pela intensidade de cada ideia. É autoral: arrasta o ponto para cima ou para baixo. Cada ponto mostra a função no ritmo (respiro, contexto, preparação, gatilho, tensão, virada, clímax, resolução, eco).
+- **Curva-alvo (opcional):** vem de uma estrutura, de um modelo de curva, ou é desenhada à mão. Aparece tracejada e marca onde o texto se afasta dela.
+- **Contraste, não retenção:** a timeline aponta trechos longos no alto sem vale, trechos planos demais, e peça sem nenhum vale. Nunca pontua "engajamento".
+- Arrastar trecho reordena o fio. Arrastar para cima da faixa tira do fio. Arrastar uma ideia da mesa para a faixa põe no fio naquele ponto.
 
-### 4.5 Curva planejada (opcional)
-- Desligada por padrão. Quem não quiser nunca vê.
-- Ligada: desenha arrastando sobre a área da curva. Aparece tracejada atrás da curva real.
-- A diferença entre as duas fica marcada onde passar de 1 nível (ex.: "aqui você planejou pico e o texto está calmo").
+## 6. Biblioteca
 
-### 4.6 Renderizar
-Painel inspirado no *export* de editor de vídeo.
-- **Formatos:** texto corrido · roteiro com tempos (`[00:42] Título`) · Markdown.
-- **Opções:** incluir títulos dos blocos · separador entre blocos · incluir intensidade como nota.
-- **Resumo antes:** número de blocos, duração total, blocos soltos ignorados, blocos vazios (aviso).
-- **Saída:** copiar e baixar `.md`/`.txt`. Futuro: `.docx`, PDF, modo teleprompter.
+- **Estruturas** (19): esqueletos abstratos com etapas; cada etapa tem função, pergunta-guia, intensidade típica, peso e função de ritmo. Cada estrutura mostra lógica, "o mesmo esqueleto pode virar" (escalas de realização), "quando vira clichê" e fontes.
+- **Curvas de ritmo** (9): referências de modulação com marcos, lógica, armadilha e fontes.
+- **Usar uma estrutura** num nível cria uma **vaga** (parte vazia) por etapa, que vira o novo fio daquele nível. O que já existia fica solto ao lado, para ser arrastado para as vagas. A estrutura também sugere a curva-alvo.
+- A biblioteca sempre mostra a intenção do nível antes da estrutura, e avisa quando ela ainda não foi escrita.
+- Nunca gera texto.
 
-## 5. Tela
+## 7. Texto final
 
-```
-┌──────────────────────────────────────────────────────────┐
-│ Montagem · título do roteiro   ritmo 150/min   Renderizar│
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│   CANVAS  (blocos, setas de sequência, linhas tracejadas)│
-│                                                          │
-├──────────────────────────────────────────────────────────┤
-│ 00:00     00:30      01:00      01:30        │ GAVETA    │
-│ ╭─╮    ╱╲         curva                      │ soltos    │
-│ ▓▓▓▓|▓▓▓▓▓▓|▓▓|▓▓▓▓▓▓▓▓|▓▓▓   clipes         │           │
-└──────────────────────────────────────────────────────────┘
-```
+Compila o fio em profundidade num documento contínuo.
+- Formatos: texto corrido, com tempos, Markdown.
+- Opções: títulos das partes; intenções como notas (para revisão).
+- Sumário com tempos, contagem de palavras e duração; avisos de partes vazias e ideias fora do fio.
+- Copiar ou baixar `.txt`/`.md`.
 
-## 6. Interações do canvas
-- Duplo clique no fundo: cria bloco.
-- Arrastar o fundo: move a vista. Roda do mouse: zoom (com Ctrl) ou rolagem.
-- Arrastar da bolinha da direita até outro bloco: sequência. Com **Shift** (ou modo "relação" na barra): ligação de relação.
-- Clicar numa ligação: seleciona; Delete apaga.
-- Delete com bloco selecionado (fora da edição): apaga o bloco e emenda a sequência.
+## 8. Interação
 
-## 7. Dados
+- Dois cliques na mesa: nova ideia solta. Dois cliques dentro de uma parte: nova ideia no fio dela.
+- Colar texto na mesa: cada parágrafo ou item de lista vira uma ideia.
+- Clique seleciona; clique de novo (ou Enter) escreve. Ctrl+Enter: próxima ideia logo abaixo.
+- Arrastar da mesa: arrasto seleciona várias; espaço + arrastar ou rolagem movem a vista; Ctrl + rolagem dá zoom.
+- Selecionar vários do mesmo nível: "Agrupar em parte". Ideia que cresceu: "Virar parte". Parte: "Desfazer parte".
+- Entrar numa parte: botão no canto, dois cliques no trecho da timeline, ou Enter. Esc volta um nível.
+- Ctrl+Z / Ctrl+Shift+Z desfazem e refazem (um gesto = um passo).
 
-```ts
-Bloco   { id, titulo, texto, x, y, intensidade: 1..5, criadoEm }
-Ligacao { id, de, para, tipo: 'sequencia' | 'relacao' }
-Roteiro { id, titulo, inicio: blocoId, ritmo, blocos[], ligacoes[], curvaPlanejada?: [t 0..1, nivel 1..5][] }
-```
-- v1: salva no navegador (localStorage) + exportar/importar `.json`.
-- Depois: arquivo local ou nuvem; colaboração.
+## 9. Técnica
 
-## 8. O que entra em cada versão
+- React 18 + TypeScript + Vite; canvas com React Flow (xyflow); estado com Zustand + zundo (desfazer); IndexedDB para guardar vários roteiros no navegador; salvar/abrir arquivo `.json`.
+- Regras em `src/model/` (funções puras, com testes em `modelo.test.ts`); interface em `src/canvas`, `src/timeline`, `src/painel`.
+- Visual: mesa calma, o fio é o único elemento forte. Literata para o texto, Hanken Grotesk para a interface, Geist Mono só para tempos. Claro e escuro.
 
-**Protótipo (agora):** canvas com blocos, dois tipos de ligação, início, timeline com clipes por duração, curva real editável, gaveta, reordenar pela timeline, curva planejada opcional, Renderizar com 3 formatos, salvar no navegador, roteiro de exemplo.
+## 10. Em aberto
 
-**v1:** desfazer/refazer, duração manual, organizar, exportar/importar `.json`, atalhos, busca.
-
-**Depois:** takes (versões alternativas do mesmo bloco, troca rápida na timeline), trilhas paralelas (ex.: fala + imagem/B-roll, como faixas de vídeo), notas de direção, IA que lê a curva e aponta trechos planos demais, colaboração.
-
-## 9. Em aberto
 - Nome do produto.
-- Trilhas paralelas: roteiro de vídeo quase sempre tem fala + imagem. Isso vira faixa extra na timeline? (forte candidato)
-- Intensidade 1–5 é suficiente, ou precisa de mais de uma curva (atenção x emoção x ritmo)?
-- Web app, desktop ou os dois.
-- Concorrência: pesquisar Arc Studio, Plottr, Twine, Scrivener, Milanote, Heptabase, Kinopio, Descript antes de decidir o posicionamento.
+- Trilhas paralelas (fala + imagem) na timeline.
+- Uma curva só (intensidade) ou mais de uma (a pesquisa escolheu só intensidade; ver `docs/pesquisa-biblioteca.md`).
+- Decisões da pesquisa para revisar: seção "Decisões para revisar" em `docs/pesquisa-biblioteca.md`.
+- Exportar `.docx`/PDF, modo teleprompter, colaboração, app de computador (Tauri).
