@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#EEEAE3"/><path d="M5 18c4 0 5-8 9-8s5 7 8 7 4-9 6-11" fill="none" stroke="#26292D" stroke-width="2.4" stroke-linecap="round"/><rect x="5" y="22" width="7" height="4" rx="1.2" fill="#B9BEC4"/><rect x="13.5" y="22" width="5" height="4" rx="1.2" fill="#D6B26A"/><rect x="20" y="22" width="7" height="4" rx="1.2" fill="#FF7300"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#26292D"/>
+<path d="M16.00 5.50C14.00 6.90 12.00 6.90 10.00 9.70" stroke="#CDAE68" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M22.00 5.50C22.00 6.90 24.00 6.90 22.00 9.70" stroke="#FF7300" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M16.00 9.70C20.00 12.50 20.00 11.10 22.00 13.90" stroke="#7D8894" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M10.00 9.70C8.00 12.50 8.00 11.10 10.00 13.90" stroke="#CDAE68" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M22.00 13.90C24.00 16.70 24.00 15.30 22.00 18.10" stroke="#7D8894" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M16.00 13.90C12.00 16.70 12.00 15.30 10.00 18.10" stroke="#FF7300" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M16.00 18.10C20.00 20.90 20.00 19.50 22.00 22.30" stroke="#CDAE68" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M10.00 18.10C8.00 20.90 8.00 19.50 10.00 22.30" stroke="#FF7300" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M16.00 22.30C12.00 25.10 12.00 25.10 10.00 26.50" stroke="#7D8894" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M22.00 22.30C24.00 25.10 22.00 25.10 22.00 26.50" stroke="#CDAE68" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M10.00 5.50C12.00 6.90 12.00 6.90 16.00 9.70" stroke="#26292D" stroke-width="6.0" stroke-linecap="butt" fill="none"/>
+<path d="M10.00 5.50C12.00 6.90 12.00 6.90 16.00 9.70" stroke="#7D8894" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M22.00 9.70C20.00 12.50 20.00 11.10 16.00 13.90" stroke="#26292D" stroke-width="6.0" stroke-linecap="butt" fill="none"/>
+<path d="M22.00 9.70C20.00 12.50 20.00 11.10 16.00 13.90" stroke="#FF7300" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M10.00 13.90C12.00 16.70 12.00 15.30 16.00 18.10" stroke="#26292D" stroke-width="6.0" stroke-linecap="butt" fill="none"/>
+<path d="M10.00 13.90C12.00 16.70 12.00 15.30 16.00 18.10" stroke="#CDAE68" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M22.00 18.10C20.00 20.90 20.00 19.50 16.00 22.30" stroke="#26292D" stroke-width="6.0" stroke-linecap="butt" fill="none"/>
+<path d="M22.00 18.10C20.00 20.90 20.00 19.50 16.00 22.30" stroke="#7D8894" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+<path d="M10.00 22.30C12.00 25.10 14.00 25.10 16.00 26.50" stroke="#26292D" stroke-width="6.0" stroke-linecap="butt" fill="none"/>
+<path d="M10.00 22.30C12.00 25.10 14.00 25.10 16.00 26.50" stroke="#FF7300" stroke-width="3.0" stroke-linecap="round" fill="none"/>
+</svg>

@@ -35,12 +35,28 @@ export const IcoTeclado = (p: P) => <svg {...base(p)}><rect x="1.5" y="4" width=
 export const IcoCurva = (p: P) => <svg {...base(p)}><path d="M1.5 10.5C3.5 10.5 4 4 6.5 4S9 12.5 11 12.5s2-4 3.5-4" /></svg>
 export const IcoRitmo = (p: P) => <svg {...base(p)}><circle cx="8" cy="8.5" r="5.5" /><path d="M8 5.5v3l2 1.5M6.5 1.5h3" /></svg>
 
-/** Marca: três trechos sob uma curva — a mesma narrativa no espaço e no tempo. */
+/** Marca: três fios trançados — as ideias que viram uma peça só (o mesmo desenho do ícone do app). */
 export const Marca = ({ tamanho = 22 }: { tamanho?: number }) => (
-  <svg width={tamanho} height={tamanho * 0.8} viewBox="0 0 25 20" aria-hidden="true">
-    <path d="M1.5 12.5C5 12.5 6 7 9.5 7s4.5 5 7.5 5 4-9 6.5-10.5" fill="none" stroke="var(--fio)" strokeWidth="2" strokeLinecap="round" />
-    <rect x="1" y="15" width="6.5" height="4" rx="1.2" fill="var(--i1)" />
-    <rect x="9" y="15" width="5" height="4" rx="1.2" fill="var(--i3)" />
-    <rect x="15.5" y="15" width="8.5" height="4" rx="1.2" fill="var(--sinal)" />
+  <svg width={tamanho * 0.72} height={tamanho} viewBox="7 3.5 18 25" aria-hidden="true">
+    <path d="M16.00 5.50C14.00 6.90 12.00 6.90 10.00 9.70" stroke="var(--i3)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M22.00 5.50C22.00 6.90 24.00 6.90 22.00 9.70" stroke="var(--sinal)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M16.00 9.70C20.00 12.50 20.00 11.10 22.00 13.90" stroke="var(--i1)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M10.00 9.70C8.00 12.50 8.00 11.10 10.00 13.90" stroke="var(--i3)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M22.00 13.90C24.00 16.70 24.00 15.30 22.00 18.10" stroke="var(--i1)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M16.00 13.90C12.00 16.70 12.00 15.30 10.00 18.10" stroke="var(--sinal)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M16.00 18.10C20.00 20.90 20.00 19.50 22.00 22.30" stroke="var(--i3)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M10.00 18.10C8.00 20.90 8.00 19.50 10.00 22.30" stroke="var(--sinal)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M16.00 22.30C12.00 25.10 12.00 25.10 10.00 26.50" stroke="var(--i1)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M22.00 22.30C24.00 25.10 22.00 25.10 22.00 26.50" stroke="var(--i3)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M10.00 5.50C12.00 6.90 12.00 6.90 16.00 9.70" stroke="var(--sup-painel)" strokeWidth="6.0" strokeLinecap="butt" fill="none" />
+    <path d="M10.00 5.50C12.00 6.90 12.00 6.90 16.00 9.70" stroke="var(--i1)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M22.00 9.70C20.00 12.50 20.00 11.10 16.00 13.90" stroke="var(--sup-painel)" strokeWidth="6.0" strokeLinecap="butt" fill="none" />
+    <path d="M22.00 9.70C20.00 12.50 20.00 11.10 16.00 13.90" stroke="var(--sinal)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M10.00 13.90C12.00 16.70 12.00 15.30 16.00 18.10" stroke="var(--sup-painel)" strokeWidth="6.0" strokeLinecap="butt" fill="none" />
+    <path d="M10.00 13.90C12.00 16.70 12.00 15.30 16.00 18.10" stroke="var(--i3)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M22.00 18.10C20.00 20.90 20.00 19.50 16.00 22.30" stroke="var(--sup-painel)" strokeWidth="6.0" strokeLinecap="butt" fill="none" />
+    <path d="M22.00 18.10C20.00 20.90 20.00 19.50 16.00 22.30" stroke="var(--i1)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
+    <path d="M10.00 22.30C12.00 25.10 14.00 25.10 16.00 26.50" stroke="var(--sup-painel)" strokeWidth="6.0" strokeLinecap="butt" fill="none" />
+    <path d="M10.00 22.30C12.00 25.10 14.00 25.10 16.00 26.50" stroke="var(--sinal)" strokeWidth="3.0" strokeLinecap="round" fill="none" />
   </svg>
 )

@@ -2,7 +2,7 @@
   "name": "braid",
   "productName": "Braid",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Escrita não linear: ideias numa mesa, ligadas num fio, viram texto.",
   "author": {
     "name": "Victor Moraes de Araujo",

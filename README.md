@@ -63,7 +63,7 @@ Com `npm run dev` aberto, aperte **R** para abrir o painel de Refinamento. É o 
 - `scripts/sync-identidade.mjs`: o script do `identidade:sync`.
 - `prototipo/`: primeira prova de conceito, arquivo único (histórico).
 - `electron/main.cjs`: a janela do app de computador (abre o `dist/`).
-- `build/icon.png`: ícone do app, gerado de `public/favicon.svg` com `npm run icone`.
+- `build/icon.png`: ícone do app (a trança), gerado de `public/favicon.svg` com `npm run icone`. As opções do desenho saem de `scripts/desenhar-trança.py`.
 - `.github/workflows/lancar.yml`: monta e publica os instaladores ao subir uma tag `v*`.
 
 Para lançar uma versão nova: suba o número em `package.json`, faça o commit e rode `git tag v<versão> && git push --tags`.
