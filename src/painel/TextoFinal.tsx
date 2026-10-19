@@ -66,7 +66,7 @@ export function TextoFinal() {
 
       <div className="tf-corpo">
         <nav className="tf-sumario" aria-label="Partes">
-          <p className="tf-rot">Montagem</p>
+          <p className="tf-rot">Sequência</p>
           <ol>
             {c.secoes.map((s) => (
               <li key={s.id} style={{ paddingLeft: (s.nivel - 1) * 14 }}>

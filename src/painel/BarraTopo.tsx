@@ -46,7 +46,7 @@ function MenuRoteiros({ fechar }: { fechar: () => void }) {
       </div>
       <div className="menu-acoes">
         <button className="menu-item" role="menuitem"
-          onClick={() => { baixarArquivo(`${nomeArquivo(rotulo(doc.nos[RAIZ]))}.enredo.json`, JSON.stringify(doc, null, 2), 'application/json'); fechar() }}>
+          onClick={() => { baixarArquivo(`${nomeArquivo(rotulo(doc.nos[RAIZ]))}.braid.json`, JSON.stringify(doc, null, 2), 'application/json'); fechar() }}>
           Salvar cópia em arquivo
         </button>
         <button className="menu-item" role="menuitem" onClick={() => arquivo.current?.click()}>Abrir arquivo…</button>
@@ -55,7 +55,7 @@ function MenuRoteiros({ fechar }: { fechar: () => void }) {
           if (!f) return
           const ok = await importarRoteiro(await f.text())
           if (ok) fechar()
-          else setErro('Esse arquivo não é um roteiro do Enredo.')
+          else setErro('Esse arquivo não é um roteiro do Braid.')
         }} />
         {erro && <p className="menu-erro">{erro}</p>}
       </div>

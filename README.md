@@ -1,15 +1,22 @@
-# Enredo
+# Braid
 
-Ferramenta de escrita para quem pensa de forma não linear: você joga as ideias numa mesa, liga e agrupa, dá uma ordem (o fio), vê a narrativa no tempo com a curva de intensidade, e no fim tira um texto linear pronto. O nome vem do duplo sentido: enredo é a trama de uma história e também um emaranhado. O app vai de um para o outro.
+Ferramenta de escrita para quem pensa de forma não linear: você joga as ideias numa mesa, liga e agrupa, dá uma ordem (o fio), vê a narrativa no tempo com a curva de intensidade, e no fim tira um texto linear pronto. O nome é a imagem do app: vários fios (as ideias, as subtramas) trançados até virar uma peça só.
 
-## Estado real hoje (30/09/2026)
+## Instalar
 
-- **Existe e funciona:** a v1 do app (React + Vite), com mesa, cartões de ideia, partes, ligações, fio, timeline com curva de intensidade, biblioteca de estruturas e texto final. Conferido em 30/09/2026: `npm test` (18 testes), `npm run typecheck` e `npm run build` passam.
-- **Onde ficam os roteiros:** só no navegador (IndexedDB). Não há conta nem servidor. Para levar um roteiro para outro lugar, use "Salvar cópia em arquivo" no menu do roteiro (gera um `.enredo.json`); "Abrir arquivo…" traz de volta.
+Baixe a versão mais nova em [Releases](https://github.com/victormoraesaraujo343/produto-braid/releases/latest):
+
+- **Windows:** `Braid-<versão>-win-x64.exe`. O instalador não é assinado, então o Windows pode mostrar "O Windows protegeu o computador": clique em "Mais informações" e depois em "Executar assim mesmo".
+- **Linux:** `Braid-<versão>-linux-x86_64.AppImage`. Marque como executável (`chmod +x Braid-*.AppImage`) e abra.
+
+## Estado real hoje (19/10/2026)
+
+- **Nome:** Braid desde 19/10/2026. Antes foi "Enredo" e, no começo, "Montagem" (o `prototipo/` ainda tem esse nome). As chaves de armazenamento continuam com o prefixo `montagem:` de propósito, para não perder roteiros já salvos.
+- **Existe e funciona:** a v1 do app (React + Vite), com mesa, cartões de ideia, partes, ligações, fio, timeline com curva de intensidade, biblioteca de estruturas e texto final. Roda no navegador (`npm run dev`) e como app de computador (Electron), com instalador para Windows e AppImage para Linux.
+- **Onde ficam os roteiros:** no armazenamento local do app (IndexedDB). Não há conta nem servidor. O app de computador e o navegador guardam roteiros separados. Para levar um roteiro de um para o outro, use "Salvar cópia em arquivo" no menu do roteiro (gera um `.braid.json`); "Abrir arquivo…" traz de volta e também abre os `.enredo.json` antigos.
 - **Laboratório:** a rodada R1 do painel de Refinamento está aberta. Barra do topo, Intenção e Cartão de ideia estão aprovados. As seções 4 a 9 estão marcadas "precisa de ajuste", sem anotação escrita. Biblioteca e Texto final ainda não foram revisados. Nenhuma rodada foi fechada.
-- **Build x laboratório:** o build final usa sempre a **primeira** opção de cada variação. As escolhas feitas no painel não vão para o build (não existe um passo que leve essas escolhas). Exemplo: a Barra do topo foi aprovada na opção "completa", mas o build sai com a "enxuta".
-- **Não há** deploy, CI nem publicação configurados.
-- **Histórico:** 5 commits, todos de 29/09/2026. O projeto começou com o nome provisório "Montagem" (o `prototipo/` ainda tem esse nome).
+- **Build x laboratório:** o build final usa sempre a **primeira** opção de cada variação. As escolhas feitas no painel não vão para o build.
+- **Lançamento:** subir uma tag `v*` dispara `.github/workflows/lancar.yml`, que monta o `.exe` e o AppImage e publica a Release. Não há atualização automática nem assinatura de código.
 
 ## Rodar
 
@@ -20,6 +27,8 @@ npm test           # regras do roteiro (src/model/modelo.test.ts)
 npm run typecheck  # checagem de tipos
 npm run build      # versão final em dist/
 npm run preview    # serve o dist/ para conferir
+npm run app        # abre como app de computador (Electron)
+npm run instalador # gera o instalador do sistema atual em release/
 ```
 
 ### Laboratório (painel de Refinamento)
@@ -53,6 +62,11 @@ Com `npm run dev` aberto, aperte **R** para abrir o painel de Refinamento. É o 
 - `laboratorio/`: o painel de Refinamento (`refinamento/`) e as anotações do app (`app/`).
 - `scripts/sync-identidade.mjs`: o script do `identidade:sync`.
 - `prototipo/`: primeira prova de conceito, arquivo único (histórico).
+- `electron/main.cjs`: a janela do app de computador (abre o `dist/`).
+- `build/icon.png`: ícone do app, gerado de `public/favicon.svg` com `npm run icone`.
+- `.github/workflows/lancar.yml`: monta e publica os instaladores ao subir uma tag `v*`.
+
+Para lançar uma versão nova: suba o número em `package.json`, faça o commit e rode `git tag v<versão> && git push --tags`.
 
 ## Repos relacionados
 

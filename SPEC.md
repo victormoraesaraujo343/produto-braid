@@ -1,6 +1,6 @@
-# Enredo — especificação v1
+# Braid — especificação v1
 
-> Antes chamado Montagem (nome provisório). Ferramenta para transformar pensamento não linear em narrativa estruturada, sem tirar do autor o controle da escrita.
+> Antes chamado Enredo e, antes disso, Montagem (nomes provisórios). Ferramenta para transformar pensamento não linear em narrativa estruturada, sem tirar do autor o controle da escrita.
 > Fonte da intenção: `docs/brief.md` (palavras do Victor). Base de pesquisa da biblioteca: `docs/pesquisa-biblioteca.md`.
 
 ## 1. Regra do produto

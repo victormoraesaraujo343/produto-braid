@@ -1,6 +1,6 @@
 # Pesquisa da biblioteca narrativa
 
-> Base de pesquisa das estruturas, funções de ritmo e modelos de curva do Enredo.
+> Base de pesquisa das estruturas, funções de ritmo e modelos de curva do Braid.
 > Os dados vivem em `src/biblioteca/estruturas.ts`, `funcoes.ts` e `curvas.ts`. A intenção do produto está em `docs/brief.md`.
 > Versão 1, 2026-09-29.
 

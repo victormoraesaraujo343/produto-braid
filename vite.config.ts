@@ -127,6 +127,8 @@ function refinamento(): Plugin {
 }
 
 export default defineConfig({
+  // Caminhos relativos: o app de computador abre o dist/ direto do disco.
+  base: './',
   plugins: [react(), refinamento()],
   optimizeDeps: { entries: ['index.html'] },
   server: {
